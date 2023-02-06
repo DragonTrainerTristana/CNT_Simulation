@@ -39,21 +39,21 @@ public class GenerateSegment : MonoBehaviour
     private int numObj;
     private int numPos;
     private bool objStatus;
+    private bool edgecollison;
 
     LineRenderer lineRenderer;
 
-    void Awake()
+    void Start()
     {
+
         segmentManage = new GameObject[reflections];
         prefabSegmentObjNum = new string[reflections + 1];
         arrayPosition = new Vector3[reflections];
         arrayTemp = new Vector3[reflections];
 
         lineRenderer = GetComponent<LineRenderer>();
-    }
 
-    void Start()
-    {
+
         // 시간 변수 초기화
         originalTime = 0.0f;
         activationTime = 2.0f;
@@ -67,7 +67,7 @@ public class GenerateSegment : MonoBehaviour
         numObj = 0;
         numPos = 0;
         objStatus = false;
-        
+        edgecollison = true;
 
     }
 
@@ -75,11 +75,15 @@ public class GenerateSegment : MonoBehaviour
     void Update()
     {
 
+        //Debug.Log(numObj);
+
         if (originalTime <= activationTime) originalTime += Time.deltaTime;
         else if (originalTime > activationTime && timeStatus == true ) {
             timeStatus = false;
             lineRenderer.enabled = false;
+
             for (int i = 0; i < numPos -1; i++) {
+
                 centralPos.x = (arrayPosition[i].x + arrayPosition[i + 1].x) / 2;
                 centralPos.y = (arrayPosition[i].y + arrayPosition[i + 1].y) / 2;
                 centralPos.z = (arrayPosition[i].z + arrayPosition[i + 1].z) / 2;
@@ -114,8 +118,10 @@ public class GenerateSegment : MonoBehaviour
                     tempPos = hit.point;
                     
                     if (numObj == 0) {
+                        
                         arrayPosition[numPos] = this.gameObject.transform.position; // 시작 위치
                         arrayTemp[numObj] = tempPos;
+                        Debug.Log("처음 실행 되는 부분.");
 
                         numPos++;
                         numObj++;
@@ -123,23 +129,30 @@ public class GenerateSegment : MonoBehaviour
                         arrayPosition[numPos] = tempPos;
                         numPos++;
                     }
-                    if (numObj > 0) { 
-                        for (int k = 0; k < numObj; k++) {
-                            if (k == 0) objStatus = true;
-                            if (arrayTemp[k] == tempPos) objStatus = false;
 
-                            if(objStatus == true){
-                                objStatus = false;
-                                arrayTemp[numObj] = tempPos;
-                                numObj++;
-
-                                arrayPosition[numPos] = hit.point;
-                                numPos++;                      
-                            }
+                    if (numObj > 0) {
+                        for (int k = 0; k < numObj; k++)
+                        {
+                            if (k == 0) { objStatus = true; }
+                            if (arrayTemp[k] == tempPos) { objStatus = false; }
                         }
+                        if(objStatus == true){
+                            objStatus = false;
+                            arrayTemp[numObj] = tempPos;
+                            numObj++;
+
+                            arrayPosition[numPos] = tempPos;
+                            Debug.Log(tempPos);
+                            numPos++;                      
+                        }
+                        
                     }
                 }
-                if (hit.collider.tag == "Edge") {
+                if (hit.collider.tag == "Edge" || edgecollison == true) {
+                    edgecollison = false;
+                    tempPos = hit.point;
+                    arrayPosition[numPos] = tempPos;
+                    numPos++;
                     remainingLength = 0.0f;
                 }
                 if (hit.collider.tag != "Silica") {
@@ -151,7 +164,7 @@ public class GenerateSegment : MonoBehaviour
                 lineRenderer.positionCount += 1;
                 lineRenderer.SetPosition(lineRenderer.positionCount - 1, ray.origin + ray.direction * remainingLength);
             }
-        }
+        }///
 
     }
 }

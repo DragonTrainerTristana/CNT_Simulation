@@ -83,30 +83,30 @@ public class ONE_CNT : MonoBehaviour
         rotationminZ[1] = 0.0f; rotationmaxZ[1] = 0.0f;
 
         //CNT_THREE_Angle
-        rotationminX[2] = -60.0f; rotationmaxX[2] = 60.0f;
-        rotationminY[2] = 120.0f; rotationmaxY[2] = 240.0f;
+        rotationminX[2] = -30.0f; rotationmaxX[2] = -150.0f;
+        rotationminY[2] = 0.0f; rotationmaxY[2] = 0.0f;
         rotationminZ[2] = 0.0f; rotationmaxZ[2] = 0.0f;
 
-        /*
+      
         //CNT_FOUR_Angle
-        rotationminX[3] = -60.0f; rotationmaxX[3] = 60.0f;
-        rotationminY[3] = 120.0f; rotationmaxY[3] = 240.0f;
+        rotationminX[3] = -30.0f+180.0f; rotationmaxX[3] = -150.0f+180.0f;
+        rotationminY[3] = 0.0f; rotationmaxY[3] = 0.0f;
         rotationminZ[3] = 0.0f; rotationmaxZ[3] = 0.0f;
-
+         
         //CNT_FIVE_Angle
         rotationminX[4] = -60.0f; rotationmaxX[4] = 60.0f;
-        rotationminY[4] = 120.0f; rotationmaxY[4] = 240.0f;
+        rotationminY[4] = 30.0f; rotationmaxY[4] = 150.0f;
         rotationminZ[4] = 0.0f; rotationmaxZ[4] = 0.0f;
 
         //CNT_SIX_Angle
-        rotationminX[5] = -60.0f; rotationmaxX[5] = 60.0f;
-        rotationminY[5] = 120.0f; rotationmaxY[5] = 240.0f;
+        rotationminX[5] = 60.0f; rotationmaxX[5] = -60.0f;
+        rotationminY[5] = -30.0f; rotationmaxY[5] = -150.0f;
         rotationminZ[5] = 0.0f; rotationmaxZ[5] = 0.0f;
-        */
+      
     }
 
     void GenerateCNT() {
-        for (int i = 1; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             for (int j = 0; j < numCnt; j++) {
                 
                 float px = Random.Range(xmin[i], xmax[i]);

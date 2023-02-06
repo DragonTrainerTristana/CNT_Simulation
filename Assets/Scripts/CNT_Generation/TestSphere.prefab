@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5562410990025114033}
   - component: {fileID: 3642778409849024146}
   - component: {fileID: -7010173476362452681}
-  - component: {fileID: -1963951643228811759}
+  - component: {fileID: -316742324638681759}
   m_Layer: 0
   m_Name: TestSphere
   m_TagString: Untagged
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f131ac4b4aea0434aa19917a5dc6b42d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -160,7 +160,7 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 1, g: 0, b: 0, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -195,7 +195,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &-1963951643228811759
+--- !u!114 &-316742324638681759
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,10 +204,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8396393365065630717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec3119171f0caa74cb6e55b88ffa91a5, type: 3}
+  m_Script: {fileID: 11500000, guid: af38c0e53064dd1498ac36c78cbbb143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  beamerID: 1
   reflections: 10
   maxLength: 1000
-  prefabSegment: {fileID: 9060438864167848863, guid: 4c5fb9c2cf6a81e47b3acb5c8ff0abda,
+  arrayPosition: []
+  numPosition: 0
+  prefabCapsuleObjNum: []
+  prefabCapsuleObj: {fileID: 9060438864167848863, guid: 4c5fb9c2cf6a81e47b3acb5c8ff0abda,
     type: 3}
+  objID: 0
