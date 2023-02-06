@@ -12,13 +12,21 @@ public class ONE_CNT : MonoBehaviour
     private GameObject[] parentCnt;
     // CNT 생성 범위
     private float[] xmin, xmax, ymin, ymax, zmin, zmax;
+    private float[] rotationminX, rotationminY, rotationminZ;
+    private float[] rotationmaxX, rotationmaxY, rotationmaxZ;
 
     void Start()
     {
-        //배열 크기 할당
+        //CNT 생성 배열 크기 할당
         xmin = new float[6]; xmax = new float[6];
         ymin = new float[6]; ymax = new float[6];
         zmin = new float[6]; zmax = new float[6];
+
+        //CNT Rotation 배열 크기 할당
+        rotationminX = new float[6]; rotationminY = new float[6]; rotationminZ = new float[6];
+        rotationmaxX = new float[6]; rotationmaxY = new float[6]; rotationmaxZ = new float[6];
+
+        //CNT 정육면체
         parentCnt = new GameObject[6];
 
         //배열 변수 값 할당
@@ -27,30 +35,15 @@ public class ONE_CNT : MonoBehaviour
 
         //오브젝트 생성
         GenerateCNT();
-
-        /*
-        for (int i = 0; i < numCnt; i++) {
-
-            GameObject cnt = Instantiate(prefabCnt) as GameObject;
-            float px = Random.Range(xmin[0], xmax[0]);
-            float py = Random.Range(ymin, ymax);
-            float pz = Random.Range(zmin, zmax);
-            cnt.transform.position = new Vector3(px, py, pz);
-            cnt.name = "cnt" + i;
-            cnt.transform.SetParent(parentCnt_ONE.transform);
-
-        }*/
     }
 
     void SetParentCnt() { // 부모 오브젝트 할당 (정육면체 한 면)
-
         parentCnt[0] = GameObject.Find("CNT_<ONE>");
         parentCnt[1] = GameObject.Find("CNT_<TWO>");
         parentCnt[2] = GameObject.Find("CNT_<THREE>");
         parentCnt[3] = GameObject.Find("CNT_<FOUR>");
         parentCnt[4] = GameObject.Find("CNT_<FIVE>");
         parentCnt[5] = GameObject.Find("CNT_<SIX>");
-
     }
 
     void SetArrayRange() {
@@ -78,18 +71,61 @@ public class ONE_CNT : MonoBehaviour
         xmin[5] = 20.5f; xmax[5] = 20.5f;
         ymin[5] = 0.0f; ymax[5] = 20.5f;
         zmin[5] = 0.0f; zmax[5] = 20.5f;
+
+        //CNT_ONE_Angle
+        rotationminX[0] = -60.0f; rotationmaxX[0] = 60.0f;
+        rotationminY[0] = -60.0f; rotationmaxY[0] = 60.0f;
+        rotationminZ[0] = 0.0f; rotationmaxZ[0] = 0.0f;
+
+        //CNT_TWO_Angle
+        rotationminX[1] = -60.0f; rotationmaxX[1] = 60.0f;
+        rotationminY[1] = 120.0f; rotationmaxY[1] = 240.0f;
+        rotationminZ[1] = 0.0f; rotationmaxZ[1] = 0.0f;
+
+        //CNT_THREE_Angle
+        rotationminX[2] = -60.0f; rotationmaxX[2] = 60.0f;
+        rotationminY[2] = 120.0f; rotationmaxY[2] = 240.0f;
+        rotationminZ[2] = 0.0f; rotationmaxZ[2] = 0.0f;
+
+        /*
+        //CNT_FOUR_Angle
+        rotationminX[3] = -60.0f; rotationmaxX[3] = 60.0f;
+        rotationminY[3] = 120.0f; rotationmaxY[3] = 240.0f;
+        rotationminZ[3] = 0.0f; rotationmaxZ[3] = 0.0f;
+
+        //CNT_FIVE_Angle
+        rotationminX[4] = -60.0f; rotationmaxX[4] = 60.0f;
+        rotationminY[4] = 120.0f; rotationmaxY[4] = 240.0f;
+        rotationminZ[4] = 0.0f; rotationmaxZ[4] = 0.0f;
+
+        //CNT_SIX_Angle
+        rotationminX[5] = -60.0f; rotationmaxX[5] = 60.0f;
+        rotationminY[5] = 120.0f; rotationmaxY[5] = 240.0f;
+        rotationminZ[5] = 0.0f; rotationmaxZ[5] = 0.0f;
+        */
     }
 
     void GenerateCNT() {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 1; i < 2; i++) {
             for (int j = 0; j < numCnt; j++) {
                 
                 float px = Random.Range(xmin[i], xmax[i]);
                 float py = Random.Range(ymin[i], ymax[i]);
                 float pz = Random.Range(zmin[i], zmax[i]);
+
+                float rx = Random.Range(rotationminX[i], rotationmaxX[i]);
+                float ry = Random.Range(rotationminY[i], rotationmaxY[i]);
+                float rz = Random.Range(rotationminZ[i], rotationmaxZ[i]);
+
                 GameObject cnt = Instantiate(prefabCnt) as GameObject; 
                 cnt.transform.position = new Vector3(px, py, pz);
-                if (i == 0) cnt.name = "cnt_ONE" + j;
+
+                //각 Segment의 Parent Node(여기서는 cnt.name)임, Beamer로 봐도 무관함
+                //GenerateSegment.cs에서 Child Node인 Segment를 관리함 
+
+                cnt.transform.localEulerAngles = new Vector3(rx, ry, rz);
+
+                if (i == 0) cnt.name = "cnt_ONE" + j;    
                 if (i == 1) cnt.name = "cnt_TWO" + j;
                 if (i == 2) cnt.name = "cnt_THREE" + j;
                 if (i == 3) cnt.name = "cnt_FOUR" + j;

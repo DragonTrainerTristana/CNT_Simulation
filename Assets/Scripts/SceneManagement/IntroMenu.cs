@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class IntroMenu : MonoBehaviour
 {
+    public void OnClickBackMain() {
+        SceneManager.LoadScene("IntroScene");
+    }
+
     public void OnClickMenu() {
         SceneManager.LoadScene("MenuScene");
     }
