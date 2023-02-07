@@ -106,7 +106,7 @@ public class ONE_CNT : MonoBehaviour
     }
 
     void GenerateCNT() {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
             for (int j = 0; j < numCnt; j++) {
                 
                 float px = Random.Range(xmin[i], xmax[i]);
