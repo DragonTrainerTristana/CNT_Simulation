@@ -6,6 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class IntroMenu : MonoBehaviour
 {
+    ONE_CNT onecnt;
+
+    //INPUTFIELD
+    [SerializeField]
+    private InputField cnt_NumInput;
+    private string cnt_Num;
+    private int cnt_data;
+
+    private void Start()
+    {
+        onecnt = GameObject.Find("CNT_Control").GetComponent<ONE_CNT>();
+    }
+
     public void OnClickBackMain() {
         SceneManager.LoadScene("IntroScene");
     }
@@ -32,6 +45,23 @@ public class IntroMenu : MonoBehaviour
     public void OnClickScene5()
     {
         SceneManager.LoadScene("Scene5");
+    }
+
+    public void OnClickStart() {
+
+        cnt_data = int.Parse(cnt_NumInput.text);
+        Debug.Log(cnt_data);
+        onecnt.numCnt = cnt_data;
+        onecnt.startState = true;
+
+    }
+
+
+    public void OnClickScenetoBack() {
+        // 변수 초기화
+        onecnt.startState = false;
+        SceneManager.LoadScene("IntroScene");
+
     }
 
 }

@@ -8,14 +8,26 @@ public class ONE_CNT : MonoBehaviour
     
     public int numCnt;
 
+    public bool startState = false;
+    public bool startOnce = false;
+
     // 부모 CNT 배열
     private GameObject[] parentCnt;
     // CNT 생성 범위
     private float[] xmin, xmax, ymin, ymax, zmin, zmax;
     private float[] rotationminX, rotationminY, rotationminZ;
     private float[] rotationmaxX, rotationmaxY, rotationmaxZ;
+    void Update()
+    {
+        if (startState == true) {
+            startState = false;
+            Initialize();
 
-    void Start()
+        }
+
+    }
+
+    void Initialize()
     {
         //CNT 생성 배열 크기 할당
         xmin = new float[6]; xmax = new float[6];
