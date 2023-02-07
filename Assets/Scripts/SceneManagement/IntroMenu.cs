@@ -16,7 +16,7 @@ public class IntroMenu : MonoBehaviour
 
     private void Start()
     {
-        onecnt = GameObject.Find("CNT_Control").GetComponent<ONE_CNT>();
+        onecnt = GameObject.Find("CNT_Control").GetComponent<ONE_CNT>(); // 이곳에 에러가...!
     }
 
     public void OnClickBackMain() {
