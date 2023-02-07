@@ -55,11 +55,16 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\SceneManagement\SceneButton.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\IntroMenu.cs" />
+    <Compile Include="Assets\Scripts\RayReflect\orignal.cs" />
     <Compile Include="Assets\Scripts\VoronoiControl\ImportData.cs" />
     <Compile Include="Assets\Scripts\VoronoiControl\RandomSpawn.cs" />
     <Compile Include="Assets\Scripts\RayReflect\GenerateSegment.cs" />
     <Compile Include="Assets\Scripts\CNT_Generation\ONE_CNT.cs" />
-    <Compile Include="Assets\Scripts\RayReflect\orignal.cs" />
+    <Compile Include="Assets\Scripts\VoronoiControl\SceneImport\ImportScene1.cs" />
+    <Compile Include="Assets\Scripts\VoronoiControl\SceneImport\ImportScene2.cs" />
+    <Compile Include="Assets\Scripts\VoronoiControl\SceneImport\ImportScene3.cs" />
+    <Compile Include="Assets\Scripts\VoronoiControl\SceneImport\ImportScene4.cs" />
+    <Compile Include="Assets\Scripts\VoronoiControl\SceneImport\ImportScene5.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

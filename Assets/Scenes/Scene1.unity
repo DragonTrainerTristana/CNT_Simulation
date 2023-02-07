@@ -791,6 +791,7 @@ GameObject:
   m_Component:
   - component: {fileID: 521099279}
   - component: {fileID: 521099278}
+  - component: {fileID: 521099280}
   m_Layer: 0
   m_Name: DataImporter
   m_TagString: Untagged
@@ -805,7 +806,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521099277}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28cb503026d72a14ba67ccefd6eddbd7, type: 3}
   m_Name: 
@@ -836,6 +837,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &521099280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521099277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86867f5d89807574b8d99e1fd839d019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  silicaParent: {fileID: 0}
+  voronoiParent: {fileID: 0}
+  silicaPosFile: 
+  voronoiVertexPositionFile: 
+  voronoiDictFile: 
+  nSilica: 0
+  nVoronoiVertex: 0
+  nVoronoiSurface: 0
+  silicaLocations: []
+  voronoiVertexLocations: []
+  m_vorVertex: {fileID: 2100000, guid: 23d21c7fd9e5aea47b8eb1f1badd0444, type: 2}
+  m_vorSurface: {fileID: 2100000, guid: 9b36034b1189d514e9458d52c96322c4, type: 2}
 --- !u!1 &565759227
 GameObject:
   m_ObjectHideFlags: 0
