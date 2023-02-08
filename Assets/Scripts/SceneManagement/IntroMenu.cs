@@ -14,6 +14,10 @@ public class IntroMenu : MonoBehaviour
     private string cnt_Num;
     private int cnt_data;
 
+    [SerializeField]
+    private InputField reflectionNum;
+    private int reflection;
+
     private void Start()
     {
         onecnt = GameObject.Find("CNT_Control").GetComponent<ONE_CNT>(); // 이곳에 에러가...!
@@ -48,6 +52,7 @@ public class IntroMenu : MonoBehaviour
     }
 
     public void OnClickStart() {
+
 
         cnt_data = int.Parse(cnt_NumInput.text);
         Debug.Log(cnt_data);

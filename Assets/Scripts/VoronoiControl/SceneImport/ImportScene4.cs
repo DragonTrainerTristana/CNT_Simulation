@@ -24,9 +24,9 @@ public class ImportScene4 : MonoBehaviour
     {
         silicaParent = GameObject.Find("Silica");
         voronoiParent = GameObject.Find("Voronoi");
-        silicaPosFile = Application.dataPath + "/DataFiles/Option4/points4.csv";
-        voronoiVertexPositionFile = Application.dataPath + "/DataFiles/Option4/voronoi_vertices4.csv";
-        voronoiDictFile = Application.dataPath + "/DataFiles/Option4/voronoi_dict4.json";
+        silicaPosFile = Application.dataPath + "/StreamingAssets/Option4/points4.csv";
+        voronoiVertexPositionFile = Application.dataPath + "/StreamingAssets/Option4/voronoi_vertices4.csv";
+        voronoiDictFile = Application.dataPath + "/StreamingAssets/Option4/voronoi_dict4.json";
 
         silicaLocations = parsePositions(silicaPosFile, out nSilica);
         voronoiVertexLocations = parsePositions(
