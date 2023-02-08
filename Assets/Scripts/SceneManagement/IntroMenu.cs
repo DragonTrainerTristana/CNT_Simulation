@@ -61,6 +61,12 @@ public class IntroMenu : MonoBehaviour
 
     }
 
+    public void OnClickExit() {
+
+        Application.Quit();
+     
+    }
+
 
     public void OnClickScenetoBack() {
         // 변수 초기화

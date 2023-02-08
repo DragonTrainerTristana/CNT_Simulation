@@ -97,11 +97,13 @@ public class orignal : MonoBehaviour
 
                 //여기서 생성해야하고 FiberCollision부분에 ID 할당해야함
                 prefabCapsuleObjNum[i] = Instantiate(prefabCapsuleObj, CentralPos, Quaternion.identity);
-
+                                
+                //각자 번호 할당
+                prefabCapsuleObjNum[i].GetComponent<EachSegment>().segmentNum = i;
+                prefabCapsuleObjNum[i].GetComponent<EachSegment>().parentNode = this.gameObject.name;
+                prefabCapsuleObjNum[i].GetComponent<EachSegment>().initialPos = arrayPosition[i];
 
                 prefabCapsuleObjNum[i].transform.LookAt(arrayPosition[i + 1]);
-
-
 
             }
 
@@ -122,7 +124,6 @@ public class orignal : MonoBehaviour
                 remainingLength -= Vector3.Distance(ray.origin, hit.point);
 
                 ray = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
-
 
                 if (hit.collider.tag == "Silica" && endSegment == true)
                 {
@@ -172,7 +173,6 @@ public class orignal : MonoBehaviour
                 }
                 if (hit.collider.tag == "Edge" && endSegment == false) {
                     endSegment = true;
-                    Debug.Log("했다구요!");
                     
                     arrayPosition[numPosition] = hit.point;
                     numPosition++;

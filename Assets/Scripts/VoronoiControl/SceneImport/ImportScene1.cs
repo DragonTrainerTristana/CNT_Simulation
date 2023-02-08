@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 
 public class ImportScene1 : MonoBehaviour
 {
+    Renderer sp;
+
     public GameObject silicaParent;
     public GameObject voronoiParent;
     public string silicaPosFile;
@@ -22,6 +24,8 @@ public class ImportScene1 : MonoBehaviour
 
     void Start()
     {
+
+
         var currentDirectory = Directory.GetCurrentDirectory();
         Debug.Log(currentDirectory);
 
@@ -46,9 +50,12 @@ public class ImportScene1 : MonoBehaviour
         foreach (Vector3 v in silicaLocations)
         {
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sp = sphere.GetComponent<Renderer>();
+            sp.material.color = Color.red;
             sphere.transform.position = v;
             sphere.name = "Silica" + idx.ToString();
             sphere.tag = "Silica";
+            
             sphere.transform.SetParent(silicaParent.transform);
             idx++;
         }
