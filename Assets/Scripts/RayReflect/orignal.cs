@@ -114,6 +114,8 @@ public class orignal : MonoBehaviour
         lineRenderer.SetPosition(0, transform.position);
         float remainingLength = maxLength;
 
+
+        //angle šG¤·
         for (int i = 0; i < reflections; i++)
         {
             if (Physics.Raycast(ray.origin, ray.direction, out hit, remainingLength))
