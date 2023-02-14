@@ -25,7 +25,7 @@ public class ArrayControl : MonoBehaviour
        
         timeState = true;
         startTime = 0.0f;
-        endTime = 10.0f;
+        endTime = 15.0f;
 
         reflection = 100;
         cntName = GetComponent<ONE_CNT>().numCnt * 6;
@@ -58,7 +58,7 @@ public class ArrayControl : MonoBehaviour
                 {
                     if (j == 0)
                     {
-                        
+                   
                         if(GetComponent<ONE_CNT>().cntArray[i] != null)
                         exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].name;
                     }

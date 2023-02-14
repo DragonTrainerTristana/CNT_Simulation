@@ -31,16 +31,24 @@ public class EachSegment : MonoBehaviour
     private bool collisionState = false;
 
     // 충돌 오브젝트
-    void Start()
+
+
+
+    private float startTime = 0.0f;
+    private float endTime = 2.0f;
+    private bool stateTime = true;
+    void Update()
     {
-        
-    }
-    private void Update()
-    {
-        if (collState == true) collisionFiber = "NONE";
+        startTime += Time.deltaTime;
+        if(stateTime == true && startTime >= endTime)
+        {
+            stateTime = false;
+            if (collisionFiber.Length <= 0) collisionFiber = "NONE";
+        }
+
+
 
     }
-
 
     private void OnTriggerEnter(Collider other)
     {
