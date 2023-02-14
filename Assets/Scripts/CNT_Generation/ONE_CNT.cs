@@ -8,6 +8,9 @@ public class ONE_CNT : MonoBehaviour
     
     public int numCnt = 100;
     int cntNameNum;
+    private float startTime;
+    private float endTime;
+    private bool stateTime;
 
     public bool startState = false;
     public bool startOnce = true;
@@ -20,23 +23,13 @@ public class ONE_CNT : MonoBehaviour
     private float[] rotationminX, rotationminY, rotationminZ;
     private float[] rotationmaxX, rotationmaxY, rotationmaxZ;
 
-    /*
-    void Update()
-    {
-        //startState == true
-        if (startOnce == true) {
-            startOnce = false;
-            startState = false;
-            Initialize();
-
-        }
-
-    }*/
-
     public void Start()
     {
 
+        stateTime = true;
         cntNameNum = 0;
+        startTime = 0.0f;
+        endTime = 2.0f;
 
         //CNT 생성 배열 크기 할당
         xmin = new float[6]; xmax = new float[6];
@@ -57,7 +50,17 @@ public class ONE_CNT : MonoBehaviour
 
         
         //오브젝트 생성
-        GenerateCNT();
+        //GenerateCNT();
+    }
+
+    private void FixedUpdate()
+    {
+        startTime += Time.deltaTime;
+        if (endTime >= startTime && stateTime == true)
+        {
+            stateTime = false;
+            GenerateCNT();
+        }
     }
 
     void SetParentCnt() { // 부모 오브젝트 할당 (정육면체 한 면)

@@ -21,7 +21,7 @@ public class ArrayControl : MonoBehaviour
 
     private void Start()
     {
-        filename = Application.dataPath + "/simpleTest.csv";
+        filename = Application.dataPath + "/TTTT.csv";
        
         timeState = true;
         startTime = 0.0f;
@@ -51,7 +51,7 @@ public class ArrayControl : MonoBehaviour
             timeState = false;
 
 
-            for (int i = 0; i < 600; i++)
+            for (int i = 0; i < cntName; i++)
             {
 
                 for (int j = 0; j < reflection + 1; j++)
@@ -67,7 +67,7 @@ public class ArrayControl : MonoBehaviour
                         if (GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j] == null) break;
                         exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j].GetComponent<EachSegment>().collisionFiber;
                         
-                        Debug.Log(exportArray[i, j]);
+                        //Debug.Log(exportArray[i, j]);
                     }
                 }
             }
@@ -86,6 +86,7 @@ public class ArrayControl : MonoBehaviour
                     sw.WriteLine(line);
                 }
             }
+            Debug.Log("EXPORT COMPLETE");
         }
     }
 }

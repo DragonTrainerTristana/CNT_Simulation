@@ -14,6 +14,7 @@ public class orignal : MonoBehaviour
 
     // Hit Array Management Variable
     public Vector3[] arrayPosition;
+    public Vector3[] comparePosition;
     private bool storePosition = false;
     public int numPosition = 0; // arraynumber
     private Vector3 arbitaryPosition_yes;
@@ -85,13 +86,14 @@ public class orignal : MonoBehaviour
             generatePosition = false;
             lineRenderer.enabled = false;
 
-            arrayPosition[numPosition] = finalObj;
-            numPosition++;
+            if (endSegment == true)
+            {
+                arrayPosition[numPosition] = finalObj;
+                numPosition++;
+            }
                 
             for (int i = 0; i < numPosition - 1; i++)
             {
-
-                
 
                 CentralPos.x = (arrayPosition[i].x + arrayPosition[i + 1].x) / 2;
                 CentralPos.y = (arrayPosition[i].y + arrayPosition[i + 1].y) / 2;
@@ -133,33 +135,27 @@ public class orignal : MonoBehaviour
 
                 ray = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
 
-                if (hit.collider.tag == "Silica" && endSegment == true)
-                {
-
+                if (hit.collider.tag == "Silica" && endSegment == false)
+                {                
                     arbitaryObj = hit.point;
                 
-
                     if (numObj == 0)
                     {
-                        //Debug.Log("시작");
+                        //Debug.Log("Silica 충돌");
                         alreadyhitObj[numObj] = arbitaryObj;
                         numObj++;
 
                         arrayPosition[numPosition] = this.gameObject.transform.position;
-                        //Debug.Log(arrayPosition[numPosition]);
-                        //Debug.Log("CNT 위치");
                         numPosition++;
 
-
                         arrayPosition[numPosition] = hit.point;
-                        //Debug.Log(arrayPosition[numPosition]);
-                        //Debug.Log("충돌 부분");
                         numPosition++;
                     }
 
-                    if (numObj > 0)
+                    else if (numObj > 0)
                     { // Compare last Collision obj for store of hit.point
 
+                        
                         for (int j = 0; j < numObj; j++)
                         {
                             if (j == 0) objStatus = true;
@@ -168,26 +164,28 @@ public class orignal : MonoBehaviour
 
                         if (objStatus == true)
                         {
+                            //Debug.Log("Silica 충돌 num>0");
                             objStatus = false;
                             alreadyhitObj[numObj] = arbitaryObj;
                             numObj++;
 
                             arrayPosition[numPosition] = hit.point;
-                            //Debug.Log(arrayPosition[numPosition]);
-                            //Debug.Log("충돌 부분");
-                            //Debug.Log(arrayPosition[numPosition]);
+
                             numPosition++;
 
                         }
 
                     }
-
-
-                    //Debug.Log(arbitaryObj.gameObject.transform.position.x);
-                    //Debug.Log(arbitaryObj.gameObject.transform.position.y);
-                    //Debug.Log(arbitaryObj.gameObject.transform.position.z);
                 }
-                if (hit.collider.tag == "Edge" && endSegment == false) {
+                else if (hit.collider.tag == "Edge" && endSegment == false) {
+
+                    if (numObj == 0) {
+                        //Debug.Log("Edge 충돌");
+                        //Debug.Log(this.gameObject.name);
+                        arrayPosition[numPosition] = this.gameObject.transform.position;
+                        numPosition++;
+                    }
+                    //else Debug.Log("Edge 충돌");
 
                     endSegment = true;
 
@@ -197,12 +195,7 @@ public class orignal : MonoBehaviour
                     remainingLength = 0.0f;
                     break;
                 }
-                if (hit.collider.tag == "Beam")
-                {
-                    
-                }
-                if (hit.collider.tag != "Silica")
-                    break;
+                else if (hit.collider.tag != "Silica")break;
             }
             else
             {

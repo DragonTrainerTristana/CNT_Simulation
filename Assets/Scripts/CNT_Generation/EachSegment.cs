@@ -9,6 +9,7 @@ public class EachSegment : MonoBehaviour
     public string parentNode; // 받음
     public int segmentNum; // 받음
 
+
     // 충돌 지점 계산 변수
     public float currentLength; // 해야함
     public float collisionLength; // 충돌 계산 내용
@@ -20,6 +21,9 @@ public class EachSegment : MonoBehaviour
     public string finalFiber;
     private string arbiContact;
     private string arbiSegment;
+
+    public bool collState = true;
+       
    
 
     // 충돌 변수
@@ -31,13 +35,20 @@ public class EachSegment : MonoBehaviour
     {
         
     }
+    private void Update()
+    {
+        if (collState == true) collisionFiber = "NONE";
+
+    }
 
 
     private void OnTriggerEnter(Collider other)
     {
 
+
         if (other.gameObject.tag == "Fiber")
         {
+            collState = false;
             arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
             arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
             if (arbiContact != parentNode)
@@ -54,16 +65,21 @@ public class EachSegment : MonoBehaviour
             arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
             if (arbiContact != parentNode)
             {
-
+                collState = false;
                 collisionFiber = arbiContact + " " + arbiSegment + "final";
                 //Debug.Log(collisionFiber);
             }
         }
         else if (other.gameObject.tag == "Edge")
         {
+            collState = false;
             collisionFiber = "final";
         }
-        else collisionFiber = "NONE";
+        else
+        {
+            collState = false;
+            collisionFiber = "NONE";
+        }
     }
 
 
