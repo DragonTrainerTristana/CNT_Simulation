@@ -2826,7 +2826,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabCnt: {fileID: 8396393365065630717, guid: 9d5c9b10347097d42a345f65fffa4ae8,
     type: 3}
-  numCnt: 4
+  numCnt: 100
   startState: 0
   startOnce: 1
   cntArray: []

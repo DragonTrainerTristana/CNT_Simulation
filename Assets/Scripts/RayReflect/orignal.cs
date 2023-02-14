@@ -110,7 +110,20 @@ public class orignal : MonoBehaviour
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().segmentNum = i;
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().parentNode = this.gameObject.name;
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().initialPos = arrayPosition[i];
+                prefabCapsuleObjNum[i].GetComponent<EachSegment>().currentLength = 0;
+                /*
+                if (i == 0) { }
+                else if (i != 0)
+                {
+                    for (int j = 0; j < i; j++)
+                    {
+                        prefabCapsuleObjNum[i].GetComponent<EachSegment>().currentLength += prefabCapsuleObjNum[j - 1].GetComponent<EachSegment>().currentLength;
 
+                    }
+                    prefabCapsuleObjNum[i].GetComponent<EachSegment>().currentLength += dirObj;
+                }
+                
+                */
                 prefabCapsuleObjNum[i].transform.LookAt(arrayPosition[i + 1]);
 
             }

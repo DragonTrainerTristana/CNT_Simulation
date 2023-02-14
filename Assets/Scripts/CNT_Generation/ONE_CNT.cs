@@ -94,7 +94,7 @@ public class ONE_CNT : MonoBehaviour
         ymin[4] = 0.0f; ymax[4] = 20.5f;
         zmin[4] = 0.0f; zmax[4] = 20.5f;
         //CNT_SIX Range
-        xmin[5] = 20.5f; xmax[5] = 20.5f;
+        xmin[5] = 18.5f; xmax[5] = 18.5f;
         ymin[5] = 0.0f; ymax[5] = 20.5f;
         zmin[5] = 0.0f; zmax[5] = 20.5f;
 

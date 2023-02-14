@@ -64,8 +64,8 @@ public class ArrayControl : MonoBehaviour
                     }
                     if (j > 0)
                     {
-                        if (GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j] == null) break;
-                        exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j].GetComponent<EachSegment>().collisionFiber;
+                        if (GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j -1] == null) break;
+                        exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<EachSegment>().collisionFiber;
                         
                         //Debug.Log(exportArray[i, j]);
                     }
