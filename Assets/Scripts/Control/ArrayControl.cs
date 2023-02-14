@@ -22,35 +22,43 @@ public class ArrayControl : MonoBehaviour
     private void Start()
     {
         filename = Application.dataPath + "/simpleTest.csv";
-
+       
         timeState = true;
         startTime = 0.0f;
-        endTime = 5.0f;
+        endTime = 10.0f;
 
         reflection = 100;
         cntName = GetComponent<ONE_CNT>().numCnt * 6;
 
-        exportArray = new string[reflection + 1, cntName];
-        collisionArray = new string[reflection + 1, cntName];
+        exportArray = new string[cntName, reflection ];
+        collisionArray = new string[cntName , reflection ];
+
+        /*
+        Debug.Log("START");
+        Debug.Log(GetComponent<ONE_CNT>().cntArray.GetLength(0));
+        Debug.Log("Analyze");
+        for (int i = 0; i < 600; i++) line = GetComponent<ONE_CNT>().cntArray[i].name;
+        Debug.Log("NO PROBLEM");*/
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
         startTime += Time.deltaTime;
         if (timeState == true && startTime >= endTime)
         {
             timeState = false;
 
 
-            for (int i = 0; i < cntName; i++)
+            for (int i = 0; i < 600; i++)
             {
 
                 for (int j = 0; j < reflection + 1; j++)
                 {
                     if (j == 0)
                     {
+                        
                         if(GetComponent<ONE_CNT>().cntArray[i] != null)
                         exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].name;
                     }
@@ -58,6 +66,8 @@ public class ArrayControl : MonoBehaviour
                     {
                         if (GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j] == null) break;
                         exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j].GetComponent<EachSegment>().collisionFiber;
+                        
+                        Debug.Log(exportArray[i, j]);
                     }
                 }
             }

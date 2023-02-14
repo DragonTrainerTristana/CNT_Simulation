@@ -29,31 +29,41 @@ public class EachSegment : MonoBehaviour
     // 충돌 오브젝트
     void Start()
     {
-        collisionFiber = "NONE";
+        
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.gameObject.tag == "Edge")
-        {
-            finalFiber = "final";
-        }
-
-
         if (other.gameObject.tag == "Fiber")
-        { 
-            //Debug.Log("충돌");
-
-            
+        {
             arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
             arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
-            if (arbiContact != parentNode) {
+            if (arbiContact != parentNode)
+            {
+
                 collisionFiber = arbiContact + " " + arbiSegment;
+                //Debug.Log(collisionFiber);
             }
-            
+
         }
+        else if (other.gameObject.tag == "Edge" && other.gameObject.tag == "Fiber")
+        {
+            arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
+            arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
+            if (arbiContact != parentNode)
+            {
+
+                collisionFiber = arbiContact + " " + arbiSegment + "final";
+                //Debug.Log(collisionFiber);
+            }
+        }
+        else if (other.gameObject.tag == "Edge")
+        {
+            collisionFiber = "final";
+        }
+        else collisionFiber = "NONE";
     }
 
 

@@ -143,6 +143,7 @@ public class ONE_CNT : MonoBehaviour
                 GameObject cnt = Instantiate(prefabCnt) as GameObject;
                 cntArray[cntNameNum] = cnt;
                 cntNameNum++;
+                
 
                 cnt.transform.position = new Vector3(px, py, pz);
 
@@ -161,5 +162,6 @@ public class ONE_CNT : MonoBehaviour
                 cnt.tag = "CNT";
             }
         }
+     
     }
 }
