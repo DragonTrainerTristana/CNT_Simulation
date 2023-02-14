@@ -6,29 +6,38 @@ public class ONE_CNT : MonoBehaviour
 {
     public GameObject prefabCnt; 
     
-    public int numCnt;
+    public int numCnt = 100;
+    int cntNameNum;
 
     public bool startState = false;
-    public bool startOnce = false;
+    public bool startOnce = true;
 
     // 부모 CNT 배열
     private GameObject[] parentCnt;
+    public GameObject[] cntArray;
     // CNT 생성 범위
     private float[] xmin, xmax, ymin, ymax, zmin, zmax;
     private float[] rotationminX, rotationminY, rotationminZ;
     private float[] rotationmaxX, rotationmaxY, rotationmaxZ;
+
+    /*
     void Update()
     {
-        if (startState == true) {
+        //startState == true
+        if (startOnce == true) {
+            startOnce = false;
             startState = false;
             Initialize();
 
         }
 
-    }
+    }*/
 
-    void Initialize()
+    public void Start()
     {
+
+        cntNameNum = 0;
+
         //CNT 생성 배열 크기 할당
         xmin = new float[6]; xmax = new float[6];
         ymin = new float[6]; ymax = new float[6];
@@ -40,11 +49,13 @@ public class ONE_CNT : MonoBehaviour
 
         //CNT 정육면체
         parentCnt = new GameObject[6];
+        cntArray = new GameObject[numCnt * 6];
 
         //배열 변수 값 할당
         SetParentCnt();
         SetArrayRange();
 
+        
         //오브젝트 생성
         GenerateCNT();
     }
@@ -129,7 +140,10 @@ public class ONE_CNT : MonoBehaviour
                 float ry = Random.Range(rotationminY[i], rotationmaxY[i]);
                 float rz = Random.Range(rotationminZ[i], rotationmaxZ[i]);
 
-                GameObject cnt = Instantiate(prefabCnt) as GameObject; 
+                GameObject cnt = Instantiate(prefabCnt) as GameObject;
+                cntArray[cntNameNum] = cnt;
+                cntNameNum++;
+
                 cnt.transform.position = new Vector3(px, py, pz);
 
                 //각 Segment의 Parent Node(여기서는 cnt.name)임, Beamer로 봐도 무관함

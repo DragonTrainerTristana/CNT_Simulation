@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af38c0e53064dd1498ac36c78cbbb143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reflections: 10
+  reflections: 100
   maxLength: 1000
   arrayPosition: []
   numPosition: 0

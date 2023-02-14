@@ -27,10 +27,12 @@ public class orignal : MonoBehaviour
 
     //Collision Object from RayCast
     private Vector3 arbitaryObj;
+    private Vector3 finalObj;
     private Vector3[] alreadyhitObj;
-    private int numObj = 0; // arraynumber
+    private int numObj; // arraynumber
     private bool objStatus = false;
     Vector3 pos;
+    
 
     //Collision Prefab of Cubiod shaped obj
     public GameObject[] prefabCapsuleObjNum;
@@ -62,6 +64,7 @@ public class orignal : MonoBehaviour
         alreadyhitObj = new Vector3[reflections];
         prefabCapsuleObjNum = new GameObject[reflections];
 
+        numObj = 0;
         //LineRenderer Component
         lineRenderer = GetComponent<LineRenderer>();
         //Initialize
@@ -72,7 +75,7 @@ public class orignal : MonoBehaviour
 
     }
 
-    void Update()
+    void FixedUpdate()
     {
 
         originalTime += Time.deltaTime;
@@ -82,9 +85,13 @@ public class orignal : MonoBehaviour
             generatePosition = false;
             lineRenderer.enabled = false;
 
-
+            arrayPosition[numPosition] = finalObj;
+            numPosition++;
+                
             for (int i = 0; i < numPosition - 1; i++)
             {
+
+                
 
                 CentralPos.x = (arrayPosition[i].x + arrayPosition[i + 1].x) / 2;
                 CentralPos.y = (arrayPosition[i].y + arrayPosition[i + 1].y) / 2;
@@ -92,7 +99,6 @@ public class orignal : MonoBehaviour
 
                 dirObj = Vector3.Distance(arrayPosition[i], arrayPosition[i + 1]);
 
-   
                 prefabCapsuleObj.transform.localScale = new Vector3(0.05f, 0.05f, dirObj);
 
                 //여기서 생성해야하고 FiberCollision부분에 ID 할당해야함
@@ -115,7 +121,7 @@ public class orignal : MonoBehaviour
         float remainingLength = maxLength;
 
 
-        //angle 숮ㅇ
+        //angle
         for (int i = 0; i < reflections; i++)
         {
             if (Physics.Raycast(ray.origin, ray.direction, out hit, remainingLength))
@@ -132,16 +138,22 @@ public class orignal : MonoBehaviour
 
                     arbitaryObj = hit.point;
                 
+
                     if (numObj == 0)
                     {
+                        //Debug.Log("시작");
                         alreadyhitObj[numObj] = arbitaryObj;
                         numObj++;
 
                         arrayPosition[numPosition] = this.gameObject.transform.position;
+                        //Debug.Log(arrayPosition[numPosition]);
+                        //Debug.Log("CNT 위치");
                         numPosition++;
 
 
                         arrayPosition[numPosition] = hit.point;
+                        //Debug.Log(arrayPosition[numPosition]);
+                        //Debug.Log("충돌 부분");
                         numPosition++;
                     }
 
@@ -162,6 +174,8 @@ public class orignal : MonoBehaviour
 
                             arrayPosition[numPosition] = hit.point;
                             //Debug.Log(arrayPosition[numPosition]);
+                            //Debug.Log("충돌 부분");
+                            //Debug.Log(arrayPosition[numPosition]);
                             numPosition++;
 
                         }
@@ -174,17 +188,19 @@ public class orignal : MonoBehaviour
                     //Debug.Log(arbitaryObj.gameObject.transform.position.z);
                 }
                 if (hit.collider.tag == "Edge" && endSegment == false) {
+
                     endSegment = true;
-                    
-                    arrayPosition[numPosition] = hit.point;
-                    numPosition++;
+
+                    finalObj = hit.point;
+                    //Debug.Log(arrayPosition[numPosition]);
+                    //Debug.Log("마지막 충돌 부분");
                     remainingLength = 0.0f;
+                    break;
                 }
                 if (hit.collider.tag == "Beam")
                 {
-                    //Debug.Log("I HITS BEAM!!!");
+                    
                 }
-
                 if (hit.collider.tag != "Silica")
                     break;
             }

@@ -17,15 +17,44 @@ public class EachSegment : MonoBehaviour
     public Vector3 collisionPos; // 해야함
 
     public string collisionFiber; // 자기 제외 충돌 된 Fiber
+    public string finalFiber;
+    private string arbiContact;
+    private string arbiSegment;
+   
 
     // 충돌 변수
     // tag -> Fiber
     private bool collisionState = false;
 
     // 충돌 오브젝트
-    void OnCollisionEnter(Collision col)
+    void Start()
     {
-        
+        collisionFiber = "NONE";
     }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.tag == "Edge")
+        {
+            finalFiber = "final";
+        }
+
+
+        if (other.gameObject.tag == "Fiber")
+        { 
+            //Debug.Log("충돌");
+
+            
+            arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
+            arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
+            if (arbiContact != parentNode) {
+                collisionFiber = arbiContact + " " + arbiSegment;
+            }
+            
+        }
+    }
+
 
 }
