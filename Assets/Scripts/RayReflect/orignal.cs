@@ -40,6 +40,7 @@ public class orignal : MonoBehaviour
     public GameObject prefabCapsuleObj;
     Vector3 CentralPos;
     private float dirObj;
+    private float accDir;
 
 
 
@@ -69,7 +70,8 @@ public class orignal : MonoBehaviour
         //LineRenderer Component
         lineRenderer = GetComponent<LineRenderer>();
         //Initialize
-        dirObj = 0f;
+        dirObj = 0.0f;
+        accDir = 0.0f;
 
         //Mesh mesh = new Mesh();
         //lineRenderer.BakeMesh(mesh);
@@ -105,12 +107,15 @@ public class orignal : MonoBehaviour
 
                 //여기서 생성해야하고 FiberCollision부분에 ID 할당해야함
                 prefabCapsuleObjNum[i] = Instantiate(prefabCapsuleObj, CentralPos, Quaternion.identity);
-                                
+
+
+                
                 //각자 번호 할당
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().segmentNum = i;
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().parentNode = this.gameObject.name;
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().initialPos = arrayPosition[i];
-                prefabCapsuleObjNum[i].GetComponent<EachSegment>().currentLength = 0;
+                prefabCapsuleObjNum[i].GetComponent<EachSegment>().currentLength = accDir;
+                accDir += dirObj;
                 /*
                 if (i == 0) { }
                 else if (i != 0)
