@@ -44,21 +44,10 @@ public class EachSegment : MonoBehaviour
         startTime += Time.deltaTime;
         if(stateTime == true && startTime >= endTime)
         {
-            /*
-            if(collisionPos != null)
-            {
-                if(segmentNum == 0)distance = Vector3.Distance(initialPos, collisionPos);
-                else if (segmentNum != 0)
-                {
-                    currentLength += Vector3.Distance(initialPos, collisionPos);
-                    distance = currentLength;
-                }
-            }
-            */
-
-
             stateTime = false;
             if (collisionFiber.Length <= 0) collisionFiber = "NONE";
+            if (finalFiber.Length <= 0) finalFiber = "NONE";
+            
         }
 
         
@@ -80,7 +69,12 @@ public class EachSegment : MonoBehaviour
             {
                 collisionPos = other.ClosestPoint(transform.position);
                 collisionFiber = arbiContact + " " + arbiSegment;
+                distance = Vector3.Distance(initialPos, collisionPos);
+                collisionLength = currentLength + distance;
+                finalFiber = collisionLength.ToString();
                 //Debug.Log(collisionFiber);
+
+
             }
             else { collisionFiber = "NONE"; }
 

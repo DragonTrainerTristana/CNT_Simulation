@@ -2805,6 +2805,7 @@ GameObject:
   - component: {fileID: 1766844590}
   - component: {fileID: 1766844589}
   - component: {fileID: 1766844591}
+  - component: {fileID: 1766844592}
   m_Layer: 0
   m_Name: CNT_Control
   m_TagString: Untagged
@@ -2854,6 +2855,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc91b57adb3a83646a61b07b13655452, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1766844592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766844588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 545807d5fc3e6ed4e877a495b3f37848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1811866504

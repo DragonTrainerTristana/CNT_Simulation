@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\VoronoiControl\RandomSpawn.cs" />
     <Compile Include="Assets\Scripts\RayReflect\GenerateSegment.cs" />
     <Compile Include="Assets\Scripts\CNT_Generation\ONE_CNT.cs" />
+    <Compile Include="Assets\Scripts\Control\ArrayCollisionDistance.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

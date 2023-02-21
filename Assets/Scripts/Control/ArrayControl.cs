@@ -21,7 +21,7 @@ public class ArrayControl : MonoBehaviour
 
     private void Start()
     {
-        filename = Application.dataPath + "/TTTT.csv";
+        filename = Application.dataPath + "/CollisionCheck.csv";
        
         timeState = true;
         startTime = 0.0f;
