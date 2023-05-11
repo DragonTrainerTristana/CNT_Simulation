@@ -15,10 +15,10 @@ public class ONE_CNT : MonoBehaviour
     public bool startState = false;
     public bool startOnce = true;
 
-    // ºÎ¸ğ CNT ¹è¿­
+    // ë¶€ëª¨ CNT ë°°ì—´
     private GameObject[] parentCnt;
     public GameObject[] cntArray;
-    // CNT »ı¼º ¹üÀ§
+    // CNT ìƒì„± ë²”ìœ„
     private float[] xmin, xmax, ymin, ymax, zmin, zmax;
     private float[] rotationminX, rotationminY, rotationminZ;
     private float[] rotationmaxX, rotationmaxY, rotationmaxZ;
@@ -31,25 +31,25 @@ public class ONE_CNT : MonoBehaviour
         startTime = 0.0f;
         endTime = 2.0f;
 
-        //CNT »ı¼º ¹è¿­ Å©±â ÇÒ´ç
+        //CNT ìƒì„± ë°°ì—´ í¬ê¸° í• ë‹¹
         xmin = new float[6]; xmax = new float[6];
         ymin = new float[6]; ymax = new float[6];
         zmin = new float[6]; zmax = new float[6];
 
-        //CNT Rotation ¹è¿­ Å©±â ÇÒ´ç
+        //CNT Rotation ë°°ì—´ í¬ê¸° í• ë‹¹
         rotationminX = new float[6]; rotationminY = new float[6]; rotationminZ = new float[6];
         rotationmaxX = new float[6]; rotationmaxY = new float[6]; rotationmaxZ = new float[6];
 
-        //CNT Á¤À°¸éÃ¼
+        //CNT ì •ìœ¡ë©´ì²´
         parentCnt = new GameObject[6];
         cntArray = new GameObject[numCnt * 6];
 
-        //¹è¿­ º¯¼ö °ª ÇÒ´ç
+        //ë°°ì—´ ë³€ìˆ˜ ê°’ í• ë‹¹
         SetParentCnt();
         SetArrayRange();
 
         
-        //¿ÀºêÁ§Æ® »ı¼º
+        //ì˜¤ë¸Œì íŠ¸ ìƒì„±
         //GenerateCNT();
     }
 
@@ -63,7 +63,7 @@ public class ONE_CNT : MonoBehaviour
         }
     }
 
-    void SetParentCnt() { // ºÎ¸ğ ¿ÀºêÁ§Æ® ÇÒ´ç (Á¤À°¸éÃ¼ ÇÑ ¸é)
+    void SetParentCnt() { // ë¶€ëª¨ ì˜¤ë¸Œì íŠ¸ í• ë‹¹ (ì •ìœ¡ë©´ì²´ í•œ ë©´)
         parentCnt[0] = GameObject.Find("CNT_<ONE>");
         parentCnt[1] = GameObject.Find("CNT_<TWO>");
         parentCnt[2] = GameObject.Find("CNT_<THREE>");
@@ -71,6 +71,40 @@ public class ONE_CNT : MonoBehaviour
         parentCnt[4] = GameObject.Find("CNT_<FIVE>");
         parentCnt[5] = GameObject.Find("CNT_<SIX>");
     }
+
+    /*
+        1ë²ˆ ì˜†ë©´ <- CNT ONE
+        xmin[0] = -42.33f; xmax[0] = 62.39f;
+        ymin[0] = -53.64f; ymax[0] = 51.26f;
+        zmin[0] = -161.21f; zmax[0] = -161.21f;
+     
+        2ë²ˆ ì˜†ë©´ 
+        xmin[0] = -42.33f; xmax[0] = 62.39f;
+        ymin[0] = -53.64f; ymax[0] = 51.26f;
+        zmin[0] = -56.59f; zmax[0] = -56.59f;
+
+        5ë²ˆ ì˜†ë©´
+        xmin[0] =  -42.33f; xmax[0] = -42.33f;
+        ymin[0] = -53.64f; ymax[0] = 51.26f;
+        zmin[0] = -161.21f; zmax[0] = -56.59f;
+
+        6ë²ˆ ì˜†ë©´
+        xmin[0] =  62.39f; xmax[0] = 62.39f;
+        ymin[0] = -53.64f; ymax[0] = 51.26f;
+        zmin[0] = -161.21f; zmax[0] = -56.59f;
+
+        ë°”ë‹¥ <- CNT THREE
+        xmin[0] = -42.33f; xmax[0] = 62.39f;
+        ymin[0] = -53.64f; ymax[0] = -53.64f;
+        zmin[0] = -161.21f; zmax[0] = -56.59f;
+
+        ìœ„ì— <- CNT FOUR
+        xmin[0] = -42.33f; xmax[0] = 62.39f;
+        ymin[0] = 51.26f; ymax[0] = 51.26f;
+        zmin[0] = -161.21f; zmax[0] = -56.59f;
+
+
+     */
 
     void SetArrayRange() {
         //CNT_ONE Range
@@ -81,11 +115,11 @@ public class ONE_CNT : MonoBehaviour
         xmin[1] = 0.0f; xmax[1] = 20.5f;
         ymin[1] = 0.0f; ymax[1] = 20.5f;
         zmin[1] = 20.5f; zmax[1] = 20.5f;
-        //CNT_THREE Range
+        //CNT_THREE Range ì´ê²Œ ë°”ë‹¥ ì¸ë“¯
         xmin[2] = 0.0f; xmax[2] = 20.5f;
         ymin[2] = 0.0f; ymax[2] = 0.0f;
         zmin[2] = 0.0f; zmax[2] = 20.5f;
-        //CNT_FOUR Range
+        //CNT_FOUR Range ì´ê²Œ ì²œì¥ ì¸ë“¯
         xmin[3] = 0.0f; xmax[3] = 20.5f;
         ymin[3] = 20.5f; ymax[3] = 20.5f;
         zmin[3] = 0.0f; zmax[3] = 20.5f;
@@ -150,8 +184,8 @@ public class ONE_CNT : MonoBehaviour
 
                 cnt.transform.position = new Vector3(px, py, pz);
 
-                //°¢ SegmentÀÇ Parent Node(¿©±â¼­´Â cnt.name)ÀÓ, Beamer·Î ºÁµµ ¹«°üÇÔ
-                //GenerateSegment.cs¿¡¼­ Child NodeÀÎ Segment¸¦ °ü¸®ÇÔ 
+                //ê° Segmentì˜ Parent Node(ì—¬ê¸°ì„œëŠ” cnt.name)ì„, Beamerë¡œ ë´ë„ ë¬´ê´€í•¨
+                //GenerateSegment.csì—ì„œ Child Nodeì¸ Segmentë¥¼ ê´€ë¦¬í•¨ 
 
                 cnt.transform.localEulerAngles = new Vector3(rx, ry, rz);
 
