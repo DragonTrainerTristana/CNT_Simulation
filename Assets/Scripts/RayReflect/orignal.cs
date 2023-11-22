@@ -78,7 +78,7 @@ public class orignal : MonoBehaviour
 
     }
 
-    void FixedUpdate()
+    void Update()
     {
 
         originalTime += Time.deltaTime;
@@ -115,6 +115,13 @@ public class orignal : MonoBehaviour
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().parentNode = this.gameObject.name;
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().initialPos = arrayPosition[i];
                 prefabCapsuleObjNum[i].GetComponent<EachSegment>().currentLength = accDir;
+
+                //prefabCapsuleObjNum[i].GetComponent<SF>().
+
+                prefabCapsuleObjNum[i].GetComponent<SF>().currentLength = accDir;
+                prefabCapsuleObjNum[i].GetComponent<SF>().initialPos = arrayPosition[i];
+
+
                 accDir += dirObj;
                 /*
                 if (i == 0) { }
@@ -135,6 +142,7 @@ public class orignal : MonoBehaviour
 
         }
 
+
         ray = new Ray(transform.position, transform.forward);
         lineRenderer.positionCount = 1;
         lineRenderer.SetPosition(0, transform.position);
@@ -146,6 +154,7 @@ public class orignal : MonoBehaviour
         {
             if (Physics.Raycast(ray.origin, ray.direction, out hit, remainingLength))
             {
+
                 lineRenderer.positionCount += 1;
                 lineRenderer.SetPosition(lineRenderer.positionCount - 1, hit.point);
 
@@ -153,7 +162,7 @@ public class orignal : MonoBehaviour
 
                 ray = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
 
-                if (hit.collider.tag == "Silica" && endSegment == false)
+                if ((hit.collider.CompareTag("Silica") && endSegment == false))
                 {                
                     arbitaryObj = hit.point;
                 
@@ -195,7 +204,7 @@ public class orignal : MonoBehaviour
 
                     }
                 }
-                else if (hit.collider.tag == "Edge" && endSegment == false) {
+                else if ((hit.collider.CompareTag("Edge") && endSegment == false) || (hit.collider.CompareTag("Start") && endSegment == false) || (hit.collider.CompareTag("Final") && endSegment == false)) {
 
                     if (numObj == 0) {
                         //Debug.Log("Edge Ãæµ¹");
@@ -213,7 +222,7 @@ public class orignal : MonoBehaviour
                     remainingLength = 0.0f;
                     break;
                 }
-                else if (hit.collider.tag != "Silica")break;
+                else if (hit.collider.tag != "Silica" && hit.collider.tag != "Start" && hit.collider.tag != "Final")break;
             }
             else
             {

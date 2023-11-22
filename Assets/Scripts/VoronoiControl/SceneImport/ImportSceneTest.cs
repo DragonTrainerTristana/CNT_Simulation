@@ -4,10 +4,10 @@ using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
 
-public class ImportScene1 : MonoBehaviour
+public class ImportSceneTest     : MonoBehaviour
 {
-    Renderer sp;
 
+    Renderer sp;
     public GameObject silicaParent;
     public GameObject voronoiParent;
     public string silicaPosFile;
@@ -24,27 +24,16 @@ public class ImportScene1 : MonoBehaviour
 
     void Start()
     {
-
-
-        var currentDirectory = Directory.GetCurrentDirectory();
-        Debug.Log(currentDirectory);
-
         silicaParent = GameObject.Find("Silica");
-        //voronoiParent = GameObject.Find("Voronoi");
-        
-        //silicaPosFile = Application.dataPath + "/DataFiles/Option1/points1.csv";
-        //voronoiVertexPositionFile = Application.dataPath + "/DataFiles/Option1/voronoi_vertices1.csv";
-        //voronoiDictFile = Application.dataPath + "/DataFiles/Option1/voronoi_dict1.json";
-        
-
-        silicaPosFile = Application.dataPath + "/StreamingAssets/Option1/points1.csv";
-        //voronoiVertexPositionFile = Application.dataPath + "/StreamingAssets/Option1/voronoi_vertices1.csv";
-        //voronoiDictFile = Application.dataPath + "/StreamingAssets/Option1/voronoi_dict1.json";
+        voronoiParent = GameObject.Find("Voronoi");
+        silicaPosFile = Application.dataPath + "/StreamingAssets/OptionTest/points.csv";
+        voronoiVertexPositionFile = Application.dataPath + "/StreamingAssets/OptionTest/voronoi_vertices.csv";
+        voronoiDictFile = Application.dataPath + "/StreamingAssets/OptionTest/voronoi_dict.json";
 
         silicaLocations = parsePositions(silicaPosFile, out nSilica);
-       // voronoiVertexLocations = parsePositions(
-       //     voronoiVertexPositionFile, out nVoronoiVertex);
-       // voronoiConnectivity = parseVoronoiEdges(voronoiDictFile, out nVoronoiSurface);
+        voronoiVertexLocations = parsePositions(
+            voronoiVertexPositionFile, out nVoronoiVertex);
+        voronoiConnectivity = parseVoronoiEdges(voronoiDictFile, out nVoronoiSurface);
 
         int idx = 0;
         foreach (Vector3 v in silicaLocations)
@@ -55,14 +44,24 @@ public class ImportScene1 : MonoBehaviour
             sphere.transform.position = v;
             sphere.name = "Silica" + idx.ToString();
             sphere.tag = "Silica";
-            
-            sphere.transform.SetParent(silicaParent.transform);
+            //sphere.transform.SetParent(silicaParent.transform);
             idx++;
         }
 
         idx = 0;
 
         /*
+        foreach (Vector3 v in voronoiVertexLocations)
+        {
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = v;
+            sphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            sphere.name = "Vertex" + idx.ToString();
+            sphere.transform.SetParent(voronoiParent.transform);
+            sphere.GetComponent<MeshRenderer>().material = m_vorVertex;
+            idx++;
+        }*/
+
         foreach (KeyValuePair<string, List<int>> entry in voronoiConnectivity)
         {
 
@@ -94,7 +93,7 @@ public class ImportScene1 : MonoBehaviour
             meshfilter.mesh.triangles = new int[] { 0, 1, 2 };
             MeshRenderer meshrenderer = surface.AddComponent<MeshRenderer>();
             meshrenderer.material = m_vorSurface;
-        }*/
+        }
     }
 
     private List<Vector3> parsePositions(string filename, out int count)

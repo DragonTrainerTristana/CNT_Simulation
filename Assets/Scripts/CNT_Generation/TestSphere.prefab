@@ -50,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8396393365065630717}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -207,9 +207,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af38c0e53064dd1498ac36c78cbbb143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reflections: 100
-  maxLength: 1000
+  reflections: 15
+  maxLength: 140
   arrayPosition: []
+  comparePosition: []
   numPosition: 0
   prefabCapsuleObjNum: []
   prefabCapsuleObj: {fileID: 9060438864167848863, guid: 4c5fb9c2cf6a81e47b3acb5c8ff0abda,

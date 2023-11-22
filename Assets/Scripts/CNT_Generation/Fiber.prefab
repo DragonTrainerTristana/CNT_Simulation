@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 729095293161362244}
   - component: {fileID: 6544936469462337433}
   - component: {fileID: -4208002345675444187}
+  - component: {fileID: 9000000199208163538}
   m_Layer: 0
   m_Name: Fiber
   m_TagString: Fiber
@@ -31,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 9060438864167848863}
   m_LocalRotation: {x: 0.14692894, y: 0.7099235, z: 0.38265464, w: 0.5727093}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 2.3455672}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 9.801731}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -63,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 81d6db1de637abe4aae2c2a3d4039cec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -144,9 +145,48 @@ MonoBehaviour:
   segmentNum: 0
   currentLength: 0
   collisionLength: 0
+  legendLength: 0
+  sLength: 0
+  fLength: 0
   initialPos: {x: 0, y: 0, z: 0}
   collisionPos: {x: 0, y: 0, z: 0}
+  sfPos: {x: 0, y: 0, z: 0}
+  startPos: {x: 0, y: 0, z: 0}
+  finalPos: {x: 0, y: 0, z: 0}
   distance: 0
+  startDis: 0
+  finalDis: 0
   collisionFiber: 
   finalFiber: 
+  sFiber: 
+  fFiber: 
   collState: 1
+  startStatus: 0
+  finalStatus: 0
+  SS: 1
+  FF: 1
+--- !u!114 &9000000199208163538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9060438864167848863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9cea810f8689b4b8a0bd8db2015e5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLength: 0
+  collisionLength: 0
+  sLength: 0
+  fLength: 0
+  initialPos: {x: 0, y: 0, z: 0}
+  startPos: {x: 0, y: 0, z: 0}
+  finalPos: {x: 0, y: 0, z: 0}
+  startDis: 0
+  finalDis: 0
+  sFiber: 
+  fFiber: 
+  startStatus: 0
+  finalStatus: 0

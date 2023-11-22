@@ -1,10 +1,9 @@
-using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
 
-public class EachSegment : MonoBehaviour
+public class ori_EachSegment : MonoBehaviour
 {
 
     private HashSet<string> uniqueCollisions = new HashSet<string>();
@@ -16,34 +15,20 @@ public class EachSegment : MonoBehaviour
     // 충돌 지점 계산 변수
     public float currentLength; // 해야함
     public float collisionLength; // 충돌 계산 내용
-    public float legendLength;
-    public float sLength;
-    public float fLength;
 
     public Vector3 initialPos; // 받음
     public Vector3 collisionPos; // 해야함 (했음)
-    public Vector3 sfPos;
-    public Vector3 startPos;
-    public Vector3 finalPos;
     public float distance; //계산함
-    public float startDis;
-    public float finalDis;
-    
 
     public string collisionFiber; // 자기 제외 충돌 된 Fiber
     public string finalFiber;
-    public string sFiber;
-    public string fFiber;
     private string arbiContact;
     private string arbiSegment;
 
     public bool collState = true;
 
-    public bool startStatus = false;
-    public bool finalStatus = false;
-
-    public bool SS = true;
-    public bool FF = true;
+    private bool startStatus = false;
+    private bool finalStatus = false;
 
 
 
@@ -63,37 +48,47 @@ public class EachSegment : MonoBehaviour
     {
 
 
-        
-        //if (collisionFiber.Length == 0) { collisionFiber = "NONE"; }
+
+        if (collisionFiber.Length <= 0) { collisionFiber = "NONE"; }
         /*
         startTime += Time.deltaTime;
-        if (stateTime == true && startTime >= endTime)
+        if(stateTime == true && startTime >= endTime)
         {
             stateTime = false;
             if (stateTime == true) { collisionFiber = "NONE"; }
             else if (collisionFiber.Length <= 0) collisionFiber = "NONE"; // 일단 여기서 문제 발생하긴 함
 
             if (finalFiber.Length <= 0) finalFiber = "NONE";
-
-        }*/
-
+            
+        }
+        */
 
 
 
 
     }
 
-
     private void OnTriggerStay(Collider other) // Enter -> Stay
     {
-   
+
+
+        if (other.gameObject.CompareTag("Start"))
+        {
+            startStatus = true;
+        }
+        if (other.gameObject.CompareTag("Final"))
+        {
+            finalStatus = true;
+        }
+
+
         if (other.gameObject.tag == "Fiber")
         {
 
 
             arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
             arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
-            string _collisionFiber = arbiContact + " " + arbiSegment;
+            string _collisionFiber = arbiContact + " " + arbiSegment; 
 
             if (arbiContact != parentNode)
             {
@@ -101,7 +96,7 @@ public class EachSegment : MonoBehaviour
 
                 if (!uniqueCollisions.Contains(_collisionFiber))
                 {
-                    // Add the collision information to the HashSet 
+                    // Add the collision information to the HashSet
                     uniqueCollisions.Add(_collisionFiber);
 
                     // Add a comma to separate collision data entries
@@ -117,7 +112,7 @@ public class EachSegment : MonoBehaviour
                     collisionLength = currentLength + distance;
 
                     finalFiber += collisionLength.ToString();
-                    collisionFiber += arbiContact.ToString();
+                    collisionFiber += _collisionFiber;
                 }
 
 

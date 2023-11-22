@@ -11,30 +11,32 @@ public class extensionCube : MonoBehaviour
 
     // stretch
     private float timeCount;
+    private float timeCount2;
     private bool deadCount;
     private float alter;
     private float bottom;
     private float height;
     private float volume;
     private bool cubeStretch = true;
-        
+    private bool okay = false;
+
     // padding
     private float dividedX;
     private float dividedY;
     private float dividedZ;
     public int numObj;
-        
-        
-    void Start()
-    {   
-        originalVec = new Vector3[numObj];
 
+
+    void Start()
+    {
+        
+        originalVec = new Vector3[numObj];
         for (int i = 0; i < numObj; i++)
         {
             //Debug.Log(paddingObject[i].transform.localPosition);
-            originalVec[i] = new Vector3(paddingObject[i].transform.localPosition.x, 
+            originalVec[i] = new Vector3(paddingObject[i].transform.localPosition.x,
             paddingObject[i].transform.localPosition.y,
-            paddingObject[i].transform.localPosition.z); 
+            paddingObject[i].transform.localPosition.z);
         }
 
         alter = 0.0f;
@@ -43,43 +45,54 @@ public class extensionCube : MonoBehaviour
         dividedY = 0.0f;
         dividedZ = 0.0f;
         volume = cubeEdge.transform.localScale.x * cubeEdge.transform.localScale.z * cubeEdge.transform.localScale.y;
-        
+
         //Initialize
         timeCount = 0.0f;
-        deadCount = false; 
-    }       
-            
+        timeCount2 = 0.0f;
+        deadCount = false;
+    }
+
     void Update()
-    {       
+    {
+
+
         timeCount += Time.deltaTime;
-            
-        if (timeCount > 0.3f && cubeStretch == true) {
-            timeCount = 0.0f;
-            cubeEdge.transform.localScale += new Vector3(0.05f, 0f, 0f);
-            bottom = cubeEdge.transform.localScale.x * cubeEdge.transform.localScale.z;
-            height = volume / bottom;
-            cubeEdge.transform.localScale = new Vector3(cubeEdge.transform.localScale.x, height, cubeEdge.transform.localScale.z);
-            
-            alter = bottom * height;
+        timeCount2 += Time.deltaTime;
 
-            Debug.Log("Volume " + alter);
-            Debug.Log("Width " + bottom);
-            Debug.Log("Height " + height);
+        if (timeCount2 > 3.0)
+        {
 
-            dividedX = cubeEdge.transform.localScale.x / 2;
-            dividedY = cubeEdge.transform.localScale.y / 2;
-            dividedZ = cubeEdge.transform.localScale.z / 2;
+            if (timeCount > 0.3f && cubeStretch == true)
+            {
+                timeCount = 0.0f;
 
-            for (int i = 0; i < numObj; i++) {
-                paddingObject[i].transform.localPosition = new Vector3(dividedX * originalVec[i].x, dividedY * originalVec[i].y, 0.0f);
+                cubeEdge.transform.localScale += new Vector3(0.05f, 0f, 0f);
+                bottom = cubeEdge.transform.localScale.x * cubeEdge.transform.localScale.z;
+                height = volume / bottom;
+                cubeEdge.transform.localScale = new Vector3(cubeEdge.transform.localScale.x, height, cubeEdge.transform.localScale.z);
+
+                alter = bottom * height;
+
+                Debug.Log("Volume " + alter);
+                Debug.Log("Width " + bottom);
+                Debug.Log("Height " + height);
+
+                dividedX = cubeEdge.transform.localScale.x / 2;
+                dividedY = cubeEdge.transform.localScale.y / 2;
+                dividedZ = cubeEdge.transform.localScale.z / 2;
+
+                for (int i = 0; i < numObj; i++)
+                {
+                    paddingObject[i].transform.localPosition = new Vector3(dividedX * originalVec[i].x, dividedY * originalVec[i].y, 0.0f);
+                }
+
+
+                if (cubeEdge.transform.localScale.y - 0.1f <= 0.0f)
+                {
+                    cubeStretch = false;
+                }
             }
+        }
 
-
-            if (cubeEdge.transform.localScale.y - 0.1f <= 0.0f) {
-                cubeStretch = false;
-            }
-        }   
-            
-    }       
+    }
 }
-  

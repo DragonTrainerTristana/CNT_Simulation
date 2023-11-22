@@ -5,7 +5,7 @@ using System.IO;
 
 public class ArrayCollisionDistance : MonoBehaviour
 {
-    
+
     string filename = "";
 
     // Start is called before the first frame update
@@ -28,16 +28,16 @@ public class ArrayCollisionDistance : MonoBehaviour
         endTime = 15.0f;
 
         reflection = 100;
-        cntName = GetComponent<ONE_CNT>().numCnt * 6;
+        cntName = GetComponent<CNT_Data10>().numCnt * 6;
 
         exportArray = new string[cntName, reflection];
         collisionArray = new string[cntName, reflection];
 
         /*
         Debug.Log("START");
-        Debug.Log(GetComponent<ONE_CNT>().cntArray.GetLength(0));
+        Debug.Log(GetComponent<CNT_Data10>().cntArray.GetLength(0));
         Debug.Log("Analyze");
-        for (int i = 0; i < 600; i++) line = GetComponent<ONE_CNT>().cntArray[i].name;
+        for (int i = 0; i < 600; i++) line = GetComponent<CNT_Data10>().cntArray[i].name;
         Debug.Log("NO PROBLEM");*/
     }
 
@@ -59,13 +59,29 @@ public class ArrayCollisionDistance : MonoBehaviour
                     if (j == 0)
                     {
 
-                        if (GetComponent<ONE_CNT>().cntArray[i] != null)
-                            exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].name;
+                        if (GetComponent<CNT_Data10>().cntArray[i] != null)
+                            exportArray[i, j] = GetComponent<CNT_Data10>().cntArray[i].name;
+
                     }
                     if (j > 0)
                     {
-                        if (GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1] == null) break;
-                        exportArray[i, j] = GetComponent<ONE_CNT>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<EachSegment>().finalFiber;
+
+                        if (GetComponent<CNT_Data10>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1] == null) break;
+
+                        if (GetComponent<CNT_Data10>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<SF>().startStatus == true)
+                        {
+          
+                            exportArray[i, j] += GetComponent<CNT_Data10>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<SF>().sFiber;
+                            exportArray[i, j] += " , ";
+                        }
+
+                        exportArray[i, j] += GetComponent<CNT_Data10>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<EachSegment>().finalFiber;
+
+                        if (GetComponent<CNT_Data10>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<SF>().finalStatus == true)
+                        {
+                            exportArray[i, j] += " , ";
+                            exportArray[i, j] += GetComponent<CNT_Data10>().cntArray[i].GetComponent<orignal>().prefabCapsuleObjNum[j - 1].GetComponent<SF>().fFiber;
+                        }
 
                         //Debug.Log(exportArray[i, j]);
                     }
