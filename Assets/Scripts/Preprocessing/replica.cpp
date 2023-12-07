@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Eigen;
 
-// ·çÇÁ¹®À» µµ´Â º¯¼öÀÎ i,jÀ» Á¦¿ÜÇÑ ³ª¸ÓÁö´Â ÀüºÎ Àü¿ªº¯¼ö
+// ë£¨í”„ë¬¸ì„ ë„ëŠ” ë³€ìˆ˜ì¸ i,jì„ ì œì™¸í•œ ë‚˜ë¨¸ì§€ëŠ” ì „ë¶€ ì „ì—­ë³€ìˆ˜
 
 const string COL_FILE = "Collision_18000.csv";
 const string DIS_FILE = "Distance_18000.csv";
@@ -84,29 +84,33 @@ int main() {
     preprocessingNode_Array(file_col);
     //visualizeNode_Array();
     
-    // ¶È°°ÀÌ ¿©±â¿¡ Distance ºÎºĞ ³Ö¾îÁÖ±â (³ªÁß¿¡)
+    // ë˜‘ê°™ì´ ì—¬ê¸°ì— Distance ë¶€ë¶„ ë„£ì–´ì£¼ê¸° (ë‚˜ì¤‘ì—)
 
-    // Storage ÀúÀå
+
+    // Storage ì €ì¥
+    // storage[max_i][max_j] = -1ë¡œ ì´ˆê¸°í™” // activate storage candidate[i] = true
     preprocessingStorage_Array();
 
     for (int i = 0; i < MAX_NODE_SIZE; i++) {
+        
         if (start_candidate[i]) {
-
             /*
-            1) rootÀÌ´Ï, parent´Â null point
-            2) ÇöÀç ÀÚ±â indexÀÎ, i (name_0)
-            3) 1Àº start positionÀ» ÀÇ¹ÌÇÏ´Â °Í °°À½ (name_1)
-            4,5) node_array[i][1][0], node_array[i][1][1]Àº Ã³À½À¸·Î ÀÚ±â¿¡°Ô ºÙ¾îÀÖ´Â CNT Segment info, °¢°¢ value_0,1ÀÓ
-            6) T°¡ ¹¹¿´À»±î? ¿¬°á »óÅÂ¸¦ ÀÇ¹ÌÇÏ´Â °É±î?
-            7) +´Â DirectionÀ» ¶æÇÔ
-            8) -1Àº node numÀ» ÀÇ¹ÌÇÔ
+            1) rootì´ë‹ˆ, parentëŠ” null point
+            2) í˜„ì¬ ìê¸° indexì¸, i (name_0)
+            3) 1ì€ start positionì„ ì˜ë¯¸í•˜ëŠ” ê²ƒ ê°™ìŒ (name_1)
+            4,5) node_array[i][1][0], node_array[i][1][1]ì€ ì²˜ìŒìœ¼ë¡œ ìê¸°ì—ê²Œ ë¶™ì–´ìˆëŠ” CNT Segment info, ê°ê° value_0,1ì„
+            6) Tê°€ ë­ì˜€ì„ê¹Œ? ì—°ê²° ìƒíƒœë¥¼ ì˜ë¯¸í•˜ëŠ” ê±¸ê¹Œ?
+            7) +ëŠ” Directionì„ ëœ»í•¨
+            8) -1ì€ node numì„ ì˜ë¯¸í•¨
             */
+
+            // Make new root of state 'S'
             Node* root = new Node(nullptr, i, 1, node_array[i][1][0], node_array[i][1][1], 'T', '+', -1);
             num_Node = 0;
             num_non_dup_Node = 0;
-            
+
             addNodeRecursive(root);
-                    
+
         }
     }
 
@@ -118,31 +122,41 @@ void addNodeRecursive(Node* node) {
 
     // If Node info is empty, then print nothing
     if (node == nullptr) { 
-        cout << "This Node is empty" << endl;
+       cout << "This Node is empty" << endl;
         return; }
 
     bool duplicateFlag = false;
-        
-    // node index (row °ª)°ú, stroage¿¡ ÀúÀåµÈ node°¡ °°À» °æ¿ì
+   
+
+    cout << " Candidate_Row : " << node->name_0 + 1 << endl;
+    cout << storage_idx[node->name_0] << endl;
+    cout << storage[node->name_0][0] <<  " " <<  node->name_1 <<endl;
+
+    system("pause");
+
+    
+   
+
+    // node index (row ê°’)ê³¼, stroageì— ì €ì¥ëœ nodeê°€ ê°™ì„ ê²½ìš°
     for (int i = 0; i < storage_idx[node->name_0]; ++i) {
         if (storage[node->name_0][i] == node->name_1) {
             duplicateFlag = true;
         }
     }
     
-    // node¿¡ Ãæµ¹µÈ ´Ù¸¥ CNT Index °ª°ú, stroage¿¡ ÀúÀåµÈ °ªÀÌ °°À» °æ¿ì
+    // nodeì— ì¶©ëŒëœ ë‹¤ë¥¸ CNT Index ê°’ê³¼, stroageì— ì €ì¥ëœ ê°’ì´ ê°™ì„ ê²½ìš°
     for (int i = 0; i < storage_idx[node->value_0]; ++i) {
         if (storage[node->value_0][i] == node->value_0) {
             duplicateFlag = true;
         }
     }
 
-    // ¸Â´Â Ä£±¸µéÀ» Ã£¾ÒÀ» °æ¿ì
+    // ë§ëŠ” ì¹œêµ¬ë“¤ì„ ì°¾ì•˜ì„ ê²½ìš°
     if (duplicateFlag)node->status = 'L';
-    // ±×·¸Áö ¾ÊÀº °æ¿ì
+    // ê·¸ë ‡ì§€ ì•Šì€ ê²½ìš°ã…
     else {
-        // S D F T 4°¡ÁöÁß ÇÏ³ª Ã£±â
-        // Âü°í·Î ÀÚ±â ÀÚ½ÅÀÌ ¹ß°ßµÇ¸é ¾î¶±ÇÏ³ª? 
+        // S D F T 4ê°€ì§€ì¤‘ í•˜ë‚˜ ì°¾ê¸°
+        // ì°¸ê³ ë¡œ ìê¸° ìì‹ ì´ ë°œê²¬ë˜ë©´ ì–´ë–¡í•˜ë‚˜? 
         node->status = find_status(node->name_0, node->name_1, node->value_0, node->value_1);
         
         
@@ -156,14 +170,14 @@ void addNodeRecursive(Node* node) {
         num_Node++;
         if (node->status != 'L') {
             node->node_num = num_non_dup_Node;
-            num_non_dup_Node++;
+            num_non_dup_Node++; 
         }
         else {
             node->node_num = -2; // L
         }
     }
     
-    // ¿¬°áµÈ °Ô ¾øÀ¸¸é Á¾·áÇØ¾ßÇÔ
+    // ì—°ê²°ëœ ê²Œ ì—†ìœ¼ë©´ ì¢…ë£Œí•´ì•¼í•¨
     if (node->status != 'T') {
         return;
     }
@@ -205,16 +219,26 @@ void preprocessingNode_Array(ifstream& file_col) {
         while (getline(ss_col, cell_col, ',')) {
             vector<int> cell_data_col = split(cell_col, 'X');
             if (cell_data_col.size() == 2 && i < MAX_NODE_SIZE && j < MAX_COLLISION) {
-                node_array[i][j][0] = cell_data_col[0]; // ÀÌ°Ô ÀüÀÚ·Î
-                node_array[i][j][1] = cell_data_col[1]; // ÀÌ°Ô ÈÄÀÚ·Î
+                node_array[i][j][0] = cell_data_col[0]; // ì´ê²Œ ì „ìë¡œ
+                node_array[i][j][1] = cell_data_col[1]; // ì´ê²Œ í›„ìë¡œ
             }
             else {
                 cerr << "Data format error or index out of bounds." << endl;
                 cout << "i : " << i << ", j : " << j << endl;
-                exit(-1); // ¿À·ù°¡ ¹ß»ıÇÏ¸é ÇÁ·Î±×·¥ Á¾·á
+                exit(-1); // ì˜¤ë¥˜ê°€ ë°œìƒí•˜ë©´ í”„ë¡œê·¸ë¨ ì¢…ë£Œ
             }
             j++;
         }
+
+        // ì œëŒ€ë¡œ ì¶”ì¶œë˜ëŠ”ì§€ í•˜ë‚˜ì”© í™•ì¸í•´ë³´ê¸°
+        //for (int k = 0; k < j; k++) {
+        //    cout << node_array[i][k][0] << endl;
+        //    cout << node_array[i][k][1] << endl;
+
+        //    cout << "number of column is : " << j << endl;
+        //}
+        //cout << "number of row is : " << i << endl;
+        //system("pause");
         i++;
     }
 }
