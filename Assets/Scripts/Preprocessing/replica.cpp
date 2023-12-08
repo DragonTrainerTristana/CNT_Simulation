@@ -96,20 +96,47 @@ int main() {
         if (start_candidate[i]) {
             /*
             1) root이니, parent는 null point
-            2) 현재 자기 index인, i (name_0)
-            3) 1은 start position을 의미하는 것 같음 (name_1)
+            2) 현재 자기 index인, i (name_0) 
+            3) 1은 start position을 의미하는 것 같음 (name_1) 
             4,5) node_array[i][1][0], node_array[i][1][1]은 처음으로 자기에게 붙어있는 CNT Segment info, 각각 value_0,1임
             6) T가 뭐였을까? 연결 상태를 의미하는 걸까?
             7) +는 Direction을 뜻함
             8) -1은 node num을 의미함
             */
-
+            
             // Make new root of state 'S'
             Node* root = new Node(nullptr, i, 1, node_array[i][1][0], node_array[i][1][1], 'T', '+', -1);
             num_Node = 0;
             num_non_dup_Node = 0;
-
             addNodeRecursive(root);
+           
+            if (findPathAliveRecursive(root)) {
+                path_status[i] = true;
+                cout << "This path is alive : " << i + 1 << endl;
+                cout << "Total amount of segments : " << num_non_dup_Node << endl;
+                system("pause");
+
+                // 살아남은 tree 구조를 뜯어봐야함 ㅇㅇ
+                
+                for (int i = 0; i < num_Node; i++) for (int j = 0; j < 8; j++) Node_list[i][j] = -4;
+                Node_list_idx = 0;
+                int root_parent =  - 1;
+                TreetoListRecursive_first(root);
+
+                for (int i = 0; i < num_non_dup_Node; i++) {
+                    cout
+                        << Node_list[i][0] << " " // name_0
+                        << Node_list[i][1] << " " // name_1
+                        << Node_list[i][2] << " " // value_0
+                        << Node_list[i][3] << " " // value_1
+                        << endl;
+                }
+
+                system("pause");
+
+
+            }
+
 
         }
     }
@@ -125,41 +152,34 @@ void addNodeRecursive(Node* node) {
        cout << "This Node is empty" << endl;
         return; }
 
-    bool duplicateFlag = false;
-   
+    bool duplicateFlag = false; 
 
-    cout << " Candidate_Row : " << node->name_0 + 1 << endl;
-    cout << storage_idx[node->name_0] << endl;
-    cout << storage[node->name_0][0] <<  " " <<  node->name_1 <<endl;
+    //cout << "storage_idx[node->name_0] : "  << storage_idx[node->name_0] << endl;
+    //cout << "node->name_0 : " << node->name_0 <<  " node->name_1 : " << node->name_1 << endl;
+    //cout << "node->value_0 : "<< node->value_0 << " node->value_1 : " << node->value_1 << endl;;
 
-    system("pause");
-
-    
-   
-
-    // node index (row 값)과, stroage에 저장된 node가 같을 경우
-    for (int i = 0; i < storage_idx[node->name_0]; ++i) {
+    // node index (row 값)과, stroage에 저장된 node가 같을 경우 // node->name_0은 row, node->name_1은 column
+    // storage_idx[node->name_0]은 storage의 column
+    for (int i = 0; i < storage_idx[node->name_0]; ++i) {   
         if (storage[node->name_0][i] == node->name_1) {
             duplicateFlag = true;
         }
     }
-    
-    // node에 충돌된 다른 CNT Index 값과, stroage에 저장된 값이 같을 경우
+   
+    // Storage에 쌓여있던 값이랑 같아버리면 안되니까 중복처리합니다.
     for (int i = 0; i < storage_idx[node->value_0]; ++i) {
-        if (storage[node->value_0][i] == node->value_0) {
-            duplicateFlag = true;
-        }
+        if ((node->value_0 != -1) && (storage[node->value_0][i] == node->value_1)) duplicateFlag = true;
     }
 
-    // 맞는 친구들을 찾았을 경우
+
+    // 중복되는 맞는 친구들을 찾았을 경우
     if (duplicateFlag)node->status = 'L';
     // 그렇지 않은 경우ㅏ
     else {
         // S D F T 4가지중 하나 찾기
-        // 참고로 자기 자신이 발견되면 어떡하나? 
+        // 참고로 자기 자신이 발견되면 어떡하나? (이전에 쌓여있던 스택이랑 겹치면 duplicateFlag = true로 바뀜)
         node->status = find_status(node->name_0, node->name_1, node->value_0, node->value_1);
-        
-        
+
         storage[node->name_0][storage_idx[node->name_0]] = node->name_1;
         storage_idx[node->name_0] += 1;
         storage[node->value_0][storage_idx[node->value_0]] = node->value_1;
@@ -171,7 +191,7 @@ void addNodeRecursive(Node* node) {
         if (node->status != 'L') {
             node->node_num = num_non_dup_Node;
             num_non_dup_Node++; 
-        }
+        }       
         else {
             node->node_num = -2; // L
         }
@@ -182,6 +202,72 @@ void addNodeRecursive(Node* node) {
         return;
     }
 
+    int left_name_0 = node->value_0;
+    int left_name_1 = node->value_1 - 1;
+    int left_value_0 = node_array[left_name_0][left_name_1][0];
+    int left_value_1 = node_array[left_name_0][left_name_1][1];
+    char left_status = 'N'; // not allocated yet
+    char left_direction = '-';
+    int left_num = -1; // not allocated yet
+
+    int middle_name_0 = node->name_0;
+    int middle_name_1 = node->name_1;
+    if (node->direction == '+') middle_name_1 += 1;
+    if (node->direction == '-') middle_name_1 -= 1;
+    int middle_value_0 = node_array[middle_name_0][middle_name_1][0];
+    int middle_value_1 = node_array[middle_name_0][middle_name_1][1];
+    char middle_status = 'N'; // not allocate yet
+    char middle_direction = node->direction;
+    int middle_num = -1; // not allocated yet
+
+    int right_name_0 = node->value_0;
+    int right_name_1 = node->value_1 + 1;
+    int right_value_0 = node_array[right_name_0][right_name_1][0];
+    int right_value_1 = node_array[right_name_0][right_name_1][1];
+    char right_status = 'N'; // not allocate yet
+    char right_direction = '+';
+    int right_num = -1; // not allocated yet
+
+    node->left = new Node(node, left_name_0, left_name_1, left_value_0, left_value_1, left_status, left_direction, left_num);
+    node->middle = new Node(node, middle_name_0, middle_name_1, middle_value_0, middle_value_1, middle_status, middle_direction, middle_num);
+    node->right = new Node(node, right_name_0, right_name_1, right_value_0, right_value_1, right_status, right_direction, right_num);
+
+    addNodeRecursive(node->left);
+    addNodeRecursive(node->middle);
+    addNodeRecursive(node->right);
+
+}
+
+void TreetoListRecursive_first(Node* node) {
+
+    if (node == nullptr)return;
+
+    int node_num_tmp = node->node_num; 
+
+    if (node_num_tmp >= 0) {
+        
+        Node_list[node_num_tmp][0] = node->name_0;
+        Node_list[node_num_tmp][1] = node->name_1;
+        Node_list[node_num_tmp][2] = node->value_0;
+        Node_list[node_num_tmp][3] = node->value_1; 
+    }
+
+    TreetoListRecursive_first(node->left);
+    TreetoListRecursive_first(node->middle);
+    TreetoListRecursive_first(node->right);
+
+}
+
+void TreetoListRecursive_second(Node* node) {
+
+
+}
+
+bool findPathAliveRecursive(Node* node) {
+    if (node == nullptr)        return false;
+    if (node->status == 'F')    return true;
+    if (findPathAliveRecursive(node->left) || findPathAliveRecursive(node->middle) || findPathAliveRecursive(node->right)) return true;
+    return false;
 }
 
 char find_status(int name_0, int name_1, int value_0, int value_1) {
