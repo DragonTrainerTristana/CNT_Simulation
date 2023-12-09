@@ -122,27 +122,51 @@ int main() {
                 Node_list_idx = 0;
                 int root_parent =  - 1;
                 TreetoListRecursive_first(root);
-
+                TreetoListRecursive_second(root);
                 for (int i = 0; i < num_non_dup_Node; i++) {
                     cout
                         << Node_list[i][0] << " " // name_0
                         << Node_list[i][1] << " " // name_1
                         << Node_list[i][2] << " " // value_0
                         << Node_list[i][3] << " " // value_1
+
+
+                        << Node_list[i][4] << " " // parent idx
+                        << Node_list[i][5] << " " // middle idx
+                        << Node_list[i][6] << " " // left idx
+                        << Node_list[i][7] << " " // right idx
                         << endl;
                 }
 
                 system("pause");
 
 
+                // 생존한 아이들
+                int matrix_size = 2 * num_non_dup_Node + 2;
+
+                SparseMatrix<double> Node_matrix(matrix_size, matrix_size);
+                                   
+                for (int i = 0; i < num_non_dup_Node; i++) {
+                    int node_list_top = Node_list[i][4];
+                    int node_list_bot = Node_list[i][5];
+                    int node_list_lft = Node_list[i][6];
+                    int node_list_rgt = Node_list[i][7];
+
+                    
+                    int mat_row_idx_top = 2 * i;
+                    int mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
+
+                    Node_matrix.insert(mat_row_idx_top, mat_col_idx_top);
+                    
+                   
+
+
+                }
+                
+               
             }
-
-
         }
     }
-
-
-
 }
 
 void addNodeRecursive(Node* node) {
@@ -260,6 +284,52 @@ void TreetoListRecursive_first(Node* node) {
 
 void TreetoListRecursive_second(Node* node) {
 
+
+    if (node == nullptr || node->status != 'T') {
+        return;
+    }
+
+    int node_num_tmp = node->node_num;
+    int node_parent_idx = -1; // S
+    int node_left_idx = -4; // not allocated yet
+    int node_middle_idx = -4; // not allocated yet
+    int node_right_idx = -4; // not allocated yet
+
+    if (node->parent != nullptr) node_parent_idx = node->parent->node_num;
+
+    int middle_name_0 = node->middle->name_0;
+    int middle_name_1 = node->middle->name_1;
+    int middle_value_0 = node->middle->value_0;
+    int middle_value_1 = node->middle->value_1;
+    int middle_status = node->middle->status;
+    int middle_node_num = node->middle->node_num;
+
+    int left_name_0 = node->left->name_0;
+    int left_name_1 = node->left->name_1;
+    int left_value_0 = node->left->value_0;
+    int left_value_1 = node->left->value_1;
+    int left_status = node->left->status;
+    int left_node_num = node->left->node_num;
+
+    int right_name_0 = node->right->name_0;
+    int right_name_1 = node->right->name_1;
+    int right_value_0 = node->right->value_0;
+    int right_value_1 = node->right->value_1;
+    int right_status = node->right->status;
+    int right_node_num = node->right->node_num;
+
+    node_left_idx = find_node_num(left_name_0, left_name_1, left_value_0, left_value_1, left_status, left_node_num);
+    node_middle_idx = find_node_num(middle_name_0, middle_name_1, middle_value_0, middle_value_1, middle_status, middle_node_num);
+    node_right_idx = find_node_num(right_name_0, right_name_1, right_value_0, right_value_1, right_status, right_node_num);
+
+    Node_list[node_num_tmp][4] = node_parent_idx; // 
+    Node_list[node_num_tmp][5] = node_middle_idx; // 
+    Node_list[node_num_tmp][6] = node_left_idx; // 
+    Node_list[node_num_tmp][7] = node_right_idx; // -2이길 바래야지
+
+    TreetoListRecursive_second(node->left);
+    TreetoListRecursive_second(node->middle);
+    TreetoListRecursive_second(node->right);
 
 }
 
