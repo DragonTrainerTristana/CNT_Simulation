@@ -74,7 +74,7 @@ void preprocessingNode_Array(ifstream& filecol);
 void preprocessingStorage_Array();
 
 
-int main() {    
+int main() {
     // pause("system");
     cout << "Let's make this" << endl;
     ifstream file_col(COL_FILE); // Declare and extract data from ...
@@ -83,7 +83,7 @@ int main() {
     // Split and Visualize
     preprocessingNode_Array(file_col);
     //visualizeNode_Array();
-    
+
     // 똑같이 여기에 Distance 부분 넣어주기 (나중에)
 
 
@@ -92,24 +92,24 @@ int main() {
     preprocessingStorage_Array();
 
     for (int i = 0; i < MAX_NODE_SIZE; i++) {
-        
+
         if (start_candidate[i]) {
             /*
             1) root이니, parent는 null point
-            2) 현재 자기 index인, i (name_0) 
-            3) 1은 start position을 의미하는 것 같음 (name_1) 
+            2) 현재 자기 index인, i (name_0)
+            3) 1은 start position을 의미하는 것 같음 (name_1)
             4,5) node_array[i][1][0], node_array[i][1][1]은 처음으로 자기에게 붙어있는 CNT Segment info, 각각 value_0,1임
             6) T가 뭐였을까? 연결 상태를 의미하는 걸까?
             7) +는 Direction을 뜻함
             8) -1은 node num을 의미함
             */
-            
+
             // Make new root of state 'S'
             Node* root = new Node(nullptr, i, 1, node_array[i][1][0], node_array[i][1][1], 'T', '+', -1);
             num_Node = 0;
             num_non_dup_Node = 0;
             addNodeRecursive(root);
-           
+
             if (findPathAliveRecursive(root)) {
                 path_status[i] = true;
                 cout << "This path is alive : " << i + 1 << endl;
@@ -117,10 +117,10 @@ int main() {
                 system("pause");
 
                 // 살아남은 tree 구조를 뜯어봐야함 ㅇㅇ
-                
+
                 for (int i = 0; i < num_Node; i++) for (int j = 0; j < 8; j++) Node_list[i][j] = -4;
                 Node_list_idx = 0;
-                int root_parent =  - 1;
+                int root_parent = -1;
                 TreetoListRecursive_first(root);
                 TreetoListRecursive_second(root);
                 for (int i = 0; i < num_non_dup_Node; i++) {
@@ -145,25 +145,25 @@ int main() {
                 int matrix_size = 2 * num_non_dup_Node + 2;
 
                 SparseMatrix<double> Node_matrix(matrix_size, matrix_size);
-                                   
+
                 for (int i = 0; i < num_non_dup_Node; i++) {
                     int node_list_top = Node_list[i][4];
                     int node_list_bot = Node_list[i][5];
                     int node_list_lft = Node_list[i][6];
                     int node_list_rgt = Node_list[i][7];
 
-                    
+
                     int mat_row_idx_top = 2 * i;
                     int mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
 
                     Node_matrix.insert(mat_row_idx_top, mat_col_idx_top);
-                    
-                   
+
+
 
 
                 }
-                
-               
+
+
             }
         }
     }
@@ -172,11 +172,12 @@ int main() {
 void addNodeRecursive(Node* node) {
 
     // If Node info is empty, then print nothing
-    if (node == nullptr) { 
-       cout << "This Node is empty" << endl;
-        return; }
+    if (node == nullptr) {
+        cout << "This Node is empty" << endl;
+        return;
+    }
 
-    bool duplicateFlag = false; 
+    bool duplicateFlag = false;
 
     //cout << "storage_idx[node->name_0] : "  << storage_idx[node->name_0] << endl;
     //cout << "node->name_0 : " << node->name_0 <<  " node->name_1 : " << node->name_1 << endl;
@@ -184,12 +185,12 @@ void addNodeRecursive(Node* node) {
 
     // node index (row 값)과, stroage에 저장된 node가 같을 경우 // node->name_0은 row, node->name_1은 column
     // storage_idx[node->name_0]은 storage의 column
-    for (int i = 0; i < storage_idx[node->name_0]; ++i) {   
+    for (int i = 0; i < storage_idx[node->name_0]; ++i) {
         if (storage[node->name_0][i] == node->name_1) {
             duplicateFlag = true;
         }
     }
-   
+
     // Storage에 쌓여있던 값이랑 같아버리면 안되니까 중복처리합니다.
     for (int i = 0; i < storage_idx[node->value_0]; ++i) {
         if ((node->value_0 != -1) && (storage[node->value_0][i] == node->value_1)) duplicateFlag = true;
@@ -214,13 +215,13 @@ void addNodeRecursive(Node* node) {
         num_Node++;
         if (node->status != 'L') {
             node->node_num = num_non_dup_Node;
-            num_non_dup_Node++; 
-        }       
+            num_non_dup_Node++;
+        }
         else {
             node->node_num = -2; // L
         }
     }
-    
+
     // 연결된 게 없으면 종료해야함
     if (node->status != 'T') {
         return;
@@ -266,14 +267,14 @@ void TreetoListRecursive_first(Node* node) {
 
     if (node == nullptr)return;
 
-    int node_num_tmp = node->node_num; 
+    int node_num_tmp = node->node_num;
 
     if (node_num_tmp >= 0) {
-        
+
         Node_list[node_num_tmp][0] = node->name_0;
         Node_list[node_num_tmp][1] = node->name_1;
         Node_list[node_num_tmp][2] = node->value_0;
-        Node_list[node_num_tmp][3] = node->value_1; 
+        Node_list[node_num_tmp][3] = node->value_1;
     }
 
     TreetoListRecursive_first(node->left);
@@ -345,12 +346,27 @@ char find_status(int name_0, int name_1, int value_0, int value_1) {
     char stat = 'T';
 
     if (value_0 == -1 && value_1 == -1) stat = 'D';
-    if (value_0 == -1 && value_1 ==  1) stat = 'F';
-    if (value_0 == -1 && value_1 ==  0) {
+    if (value_0 == -1 && value_1 == 1) stat = 'F';
+    if (value_0 == -1 && value_1 == 0) {
         stat = 'S'; start_candidate[name_0] = false;
     }
     return stat;
 
+}
+
+int find_node_num(int name_0, int name_1, int value_0, int value_1, char status, int node_num_given) {
+    int node_num;
+    if (status == 'S') node_num = -1;
+    if (status == 'F') node_num = -2;
+    if (status == 'D') node_num = -3;
+    if (status == 'T') node_num = node_num_given;
+    if (status == 'L') {
+        for (int i = 0; i < num_non_dup_Node; i++) {
+            if (Node_list[i][0] == name_0 && Node_list[i][1] == name_1) node_num = i;
+            if (Node_list[i][0] == value_0 && Node_list[i][1] == value_1) node_num = i;
+        }
+    }
+    return node_num;
 }
 
 vector<int> split(const string& s, char delim) {
