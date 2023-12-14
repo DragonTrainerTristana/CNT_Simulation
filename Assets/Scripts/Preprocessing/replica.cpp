@@ -151,19 +151,100 @@ int main() {
                     int node_list_bot = Node_list[i][5];
                     int node_list_lft = Node_list[i][6];
                     int node_list_rgt = Node_list[i][7];
-
+                    cout << Node_list[i][0] << " " << Node_list[i][1] << " " << Node_list[i][2] << " " << Node_list[i][3] << " ";
+                    cout << node_list_top << " " << node_list_bot << " " << node_list_lft << " " << node_list_rgt << endl;
 
                     int mat_row_idx_top = 2 * i;
-                    int mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
+                    int mat_col_idx_top;
+                    mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
+                    Node_matrix.insert(mat_row_idx_top, mat_col_idx_top) = 1;
+                    if (node_list_top >= 0) Node_matrix.insert(mat_row_idx_top, mat_col_idx_top + 1) = 1;
 
-                    Node_matrix.insert(mat_row_idx_top, mat_col_idx_top);
+                    int mat_row_idx_bot = 2 * i;
+                    int mat_col_idx_bot;
+                    if (-3 < node_list_bot) {
+                        mat_col_idx_bot = (node_list_bot < 0) ? matrix_size + node_list_bot : 2 * node_list_bot;
+                        Node_matrix.insert(mat_row_idx_bot, mat_col_idx_bot) = 1;
+                        if (node_list_bot >= 0) Node_matrix.insert(mat_row_idx_bot, mat_col_idx_bot + 1) = 1;
+                    }
 
+                    int mat_row_idx_twin = 2 * i;
+                    int mat_col_idx_twin = 2 * i + 1;
+                    Node_matrix.insert(mat_row_idx_twin, mat_col_idx_twin) = 1;
+                    Node_matrix.insert(mat_col_idx_twin, mat_row_idx_twin) = 1;
 
+                    int mat_row_idx_lft = 2 * i + 1;
+                    int mat_col_idx_lft;
+                    if (-3 < node_list_lft) {
+                        mat_col_idx_lft = (node_list_lft < 0) ? matrix_size + node_list_lft : 2 * node_list_lft;
+                        Node_matrix.insert(mat_row_idx_lft, mat_col_idx_lft) = 1;
+                        if (node_list_lft >= 0) Node_matrix.insert(mat_row_idx_lft, mat_col_idx_lft + 1) = 1;
+                    }
 
-
+                    int mat_row_idx_rgt = 2 * i + 1;
+                    int mat_col_idx_rgt;
+                    if (-3 < node_list_rgt) {
+                        mat_col_idx_rgt = (node_list_rgt < 0) ? matrix_size + node_list_rgt : 2 * node_list_rgt;
+                        Node_matrix.insert(mat_row_idx_rgt, mat_col_idx_rgt) = 1;
+                        if (node_list_rgt >= 0) Node_matrix.insert(mat_row_idx_rgt, mat_col_idx_rgt + 1) = 1;
+                    }
                 }
 
 
+                for (int i = 0; i < matrix_size; i++) Node_matrix.insert(matrix_size - 1, i) = Node_matrix.coeff(i, matrix_size - 1);
+                for (int i = 0; i < matrix_size; i++) Node_matrix.insert(matrix_size - 2, i) = Node_matrix.coeff(i, matrix_size - 2);
+
+                for (int i = 0; i < matrix_size; i++) {
+                    for (int j = 0; j < matrix_size; j++) {
+                        if (Node_matrix.coeff(i, j) != Node_matrix.coeff(j, i) != 0) Node_matrix.coeffRef(i, j) = 0;
+                    }
+                }
+                SparseMatrix<double> Node_matrix_A(matrix_size - 2, matrix_size - 2);
+                for (int i = 0; i < matrix_size - 2; i++) {
+                    system("pause");
+                    cout << "step : " << i << endl;
+
+
+                    // i가 두번째 돌때 갑자기 에러가남 왜일까요 왜일까요 왜일까요 왜일까요 왜일까요 왜일까요 왜일까요 
+                    for (int j = 0; j < matrix_size - 2; j++) {
+
+                        Node_matrix_A.insert(i, j) = Node_matrix.coeff(i, j);
+                        if (Node_matrix.coeff(i, j) > 0) {
+                            int node_num = -1;
+                            int node_idx = -1;
+                            int i_0 = Node_list[i][0];
+                            int i_1 = Node_list[i][1];
+                            int i_2 = Node_list[i][2];
+                            int i_3 = Node_list[i][3];
+                            int j_0 = Node_list[j][0];
+                            int j_1 = Node_list[j][1];
+                            int j_2 = Node_list[j][2];
+                            int j_3 = Node_list[j][3];
+                            if (i_0 == j_0) {
+                                node_num = i_0;
+                                node_idx = i_1 < j_1 ? i_1 : j_1;
+                            }
+                            if (Node_list[i][0] == Node_list[j][2]) {
+                                node_num = i_0;
+                                node_idx = i_1 < j_3 ? i_1 : j_3;
+                            }
+                            if (Node_list[i][2] == Node_list[j][0]) {
+                                node_num = i_2;
+                                node_idx = i_3 < j_1 ? i_3 : j_1;
+                            }
+                            if (Node_list[i][2] == Node_list[j][2]) {
+                                node_num = i_2;
+                                node_idx = i_3 < j_3 ? i_3 : j_3;
+                            }
+                            Node_matrix_A.insert(i, j) = Node_distance[node_num][node_idx];
+                        }
+                    }
+                }
+                VectorXd Node_vector_b(matrix_size - 2);
+
+                Node_matrix_A.makeCompressed();
+                cout << "done" << endl;
+                system("pause");
             }
         }
     }
