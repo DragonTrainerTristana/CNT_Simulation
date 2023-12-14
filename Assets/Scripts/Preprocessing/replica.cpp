@@ -25,6 +25,7 @@ int num_Node = 0;
 int num_non_dup_Node = 0;
 int Node_list[MAX_NODE_SIZE][8] = { {0, 0, 0, 0, 0, 0, 0, 0} }; //name_0, name_1, value_0, value_1, parent, left, middle, right
 int Node_list_idx = 0;
+int Dis_list[MAX_NODE_SIZE][8] = { {0, 0, 0, 0, 0, 0, 0, 0} };
 
 struct Node {
     int name_0;
@@ -70,7 +71,7 @@ void TreetoListRecursive_second(Node* node);
 
 // Preprocessing part
 vector<int> split(const string& s, char delim);
-void preprocessingNode_Array(ifstream& filecol);
+void preprocessingNode_Array(ifstream& filecol ,ifstream& filedis);
 void preprocessingStorage_Array();
 
 
@@ -78,10 +79,11 @@ int main() {
     // pause("system");
     cout << "Let's make this" << endl;
     ifstream file_col(COL_FILE); // Declare and extract data from ...
+    ifstream file_dis(DIS_FILE);
     cout << "Load process is success" << endl;
 
     // Split and Visualize
-    preprocessingNode_Array(file_col);
+    preprocessingNode_Array(file_col, file_dis);
     //visualizeNode_Array();
 
     // 똑같이 여기에 Distance 부분 넣어주기 (나중에)
@@ -130,7 +132,6 @@ int main() {
                         << Node_list[i][2] << " " // value_0
                         << Node_list[i][3] << " " // value_1
 
-
                         << Node_list[i][4] << " " // parent idx
                         << Node_list[i][5] << " " // middle idx
                         << Node_list[i][6] << " " // left idx
@@ -146,19 +147,24 @@ int main() {
 
                 SparseMatrix<double> Node_matrix(matrix_size, matrix_size);
 
+
+                cout <<"-------- 행렬 작업 --------" <<endl<<endl;
+
                 for (int i = 0; i < num_non_dup_Node; i++) {
-                    int node_list_top = Node_list[i][4];
-                    int node_list_bot = Node_list[i][5];
-                    int node_list_lft = Node_list[i][6];
-                    int node_list_rgt = Node_list[i][7];
+                    int node_list_top = Node_list[i][4]; // parent
+                    int node_list_bot = Node_list[i][5]; // middle
+                    int node_list_lft = Node_list[i][6]; // left
+                    int node_list_rgt = Node_list[i][7]; // right
                     cout << Node_list[i][0] << " " << Node_list[i][1] << " " << Node_list[i][2] << " " << Node_list[i][3] << " ";
                     cout << node_list_top << " " << node_list_bot << " " << node_list_lft << " " << node_list_rgt << endl;
+                    
 
                     int mat_row_idx_top = 2 * i;
                     int mat_col_idx_top;
                     mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
                     Node_matrix.insert(mat_row_idx_top, mat_col_idx_top) = 1;
                     if (node_list_top >= 0) Node_matrix.insert(mat_row_idx_top, mat_col_idx_top + 1) = 1;
+                    
 
                     int mat_row_idx_bot = 2 * i;
                     int mat_col_idx_bot;
@@ -173,6 +179,7 @@ int main() {
                     Node_matrix.insert(mat_row_idx_twin, mat_col_idx_twin) = 1;
                     Node_matrix.insert(mat_col_idx_twin, mat_row_idx_twin) = 1;
 
+
                     int mat_row_idx_lft = 2 * i + 1;
                     int mat_col_idx_lft;
                     if (-3 < node_list_lft) {
@@ -180,6 +187,7 @@ int main() {
                         Node_matrix.insert(mat_row_idx_lft, mat_col_idx_lft) = 1;
                         if (node_list_lft >= 0) Node_matrix.insert(mat_row_idx_lft, mat_col_idx_lft + 1) = 1;
                     }
+
 
                     int mat_row_idx_rgt = 2 * i + 1;
                     int mat_col_idx_rgt;
@@ -193,13 +201,18 @@ int main() {
 
                 for (int i = 0; i < matrix_size; i++) Node_matrix.insert(matrix_size - 1, i) = Node_matrix.coeff(i, matrix_size - 1);
                 for (int i = 0; i < matrix_size; i++) Node_matrix.insert(matrix_size - 2, i) = Node_matrix.coeff(i, matrix_size - 2);
+                
 
                 for (int i = 0; i < matrix_size; i++) {
                     for (int j = 0; j < matrix_size; j++) {
                         if (Node_matrix.coeff(i, j) != Node_matrix.coeff(j, i) != 0) Node_matrix.coeffRef(i, j) = 0;
                     }
                 }
+
+
                 SparseMatrix<double> Node_matrix_A(matrix_size - 2, matrix_size - 2);
+                
+                
                 for (int i = 0; i < matrix_size - 2; i++) {
                     system("pause");
                     cout << "step : " << i << endl;
@@ -207,8 +220,12 @@ int main() {
 
                     // i가 두번째 돌때 갑자기 에러가남 왜일까요 왜일까요 왜일까요 왜일까요 왜일까요 왜일까요 왜일까요 
                     for (int j = 0; j < matrix_size - 2; j++) {
-
-                        Node_matrix_A.insert(i, j) = Node_matrix.coeff(i, j);
+                        
+                        cout << "-------- 1 --------" << endl;
+                        
+                        //Node_matrix_A.insert(i, j) = Node_matrix.coeff(i, j);
+                        Node_matrix_A.coeffRef(i, j) = Node_matrix.coeff(i, j);
+                        
                         if (Node_matrix.coeff(i, j) > 0) {
                             int node_num = -1;
                             int node_idx = -1;
@@ -236,10 +253,13 @@ int main() {
                                 node_num = i_2;
                                 node_idx = i_3 < j_3 ? i_3 : j_3;
                             }
+                            cout << "-------- 2 --------" << endl;
+                            
                             Node_matrix_A.insert(i, j) = Node_distance[node_num][node_idx];
                         }
                     }
                 }
+
                 VectorXd Node_vector_b(matrix_size - 2);
 
                 Node_matrix_A.makeCompressed();
@@ -461,7 +481,7 @@ vector<int> split(const string& s, char delim) {
 }
 
 
-void preprocessingNode_Array(ifstream& file_col) {
+void preprocessingNode_Array(ifstream& file_col, ifstream& file_dis) {
     string line_col;
     int i = 0;
 
