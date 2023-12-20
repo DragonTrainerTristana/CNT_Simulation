@@ -70,20 +70,23 @@ void TreetoListRecursive_second(Node* node);
 
 // Preprocessing part
 vector<int> split(const string& s, char delim);
-void preprocessingNode_Array(ifstream& filecol);
+void preprocessingNode_Array(ifstream& file_col);
+void preprocessingDis_Array(ifstream& file_dis);
 void preprocessingStorage_Array();
 
 
-int main() {    
+int main() {
     // pause("system");
     cout << "Let's make this" << endl;
     ifstream file_col(COL_FILE); // Declare and extract data from ...
+    ifstream file_dis(DIS_FILE);
     cout << "Load process is success" << endl;
 
     // Split and Visualize
     preprocessingNode_Array(file_col);
+    preprocessingDis_Array(file_dis);
     //visualizeNode_Array();
-    
+
     // 똑같이 여기에 Distance 부분 넣어주기 (나중에)
 
 
@@ -92,24 +95,24 @@ int main() {
     preprocessingStorage_Array();
 
     for (int i = 0; i < MAX_NODE_SIZE; i++) {
-        
+
         if (start_candidate[i]) {
             /*
             1) root이니, parent는 null point
-            2) 현재 자기 index인, i (name_0) 
-            3) 1은 start position을 의미하는 것 같음 (name_1) 
+            2) 현재 자기 index인, i (name_0)
+            3) 1은 start position을 의미하는 것 같음 (name_1)
             4,5) node_array[i][1][0], node_array[i][1][1]은 처음으로 자기에게 붙어있는 CNT Segment info, 각각 value_0,1임
             6) T가 뭐였을까? 연결 상태를 의미하는 걸까?
             7) +는 Direction을 뜻함
             8) -1은 node num을 의미함
             */
-            
+
             // Make new root of state 'S'
             Node* root = new Node(nullptr, i, 1, node_array[i][1][0], node_array[i][1][1], 'T', '+', -1);
             num_Node = 0;
             num_non_dup_Node = 0;
             addNodeRecursive(root);
-           
+
 
             // Root node's status is 'start' and the child node is attached at 'final' then this node is alive.
             if (findPathAliveRecursive(root)) {
@@ -119,10 +122,10 @@ int main() {
                 system("pause");
 
                 // 살아남은 tree 구조를 뜯어봐야함 ㅇㅇ
-                
+
                 for (int i = 0; i < num_Node; i++) for (int j = 0; j < 8; j++) Node_list[i][j] = -4;
                 Node_list_idx = 0;
-                int root_parent =  - 1;
+                int root_parent = -1;
                 TreetoListRecursive_first(root);
                 TreetoListRecursive_second(root);
                 for (int i = 0; i < num_non_dup_Node; i++) {
@@ -147,38 +150,120 @@ int main() {
                 int matrix_size = 2 * num_non_dup_Node + 2;
 
                 SparseMatrix<double> Node_matrix(matrix_size, matrix_size);
-                                   
+
                 for (int i = 0; i < num_non_dup_Node; i++) {
                     int node_list_top = Node_list[i][4];
                     int node_list_bot = Node_list[i][5];
                     int node_list_lft = Node_list[i][6];
                     int node_list_rgt = Node_list[i][7];
 
-                    
+
                     int mat_row_idx_top = 2 * i;
-                    int mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
+                    int mat_col_idx_top;
+                    mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
+                    Node_matrix.insert(mat_row_idx_top, mat_col_idx_top) = 1;
+                    if (node_list_top >= 0) Node_matrix.insert(mat_row_idx_top, mat_col_idx_top + 1) = 1;
 
-                    Node_matrix.insert(mat_row_idx_top, mat_col_idx_top);
-                    
-                   
+                    int mat_row_idx_bot = 2 * i;
+                    int mat_col_idx_bot;
+                    if (-3 < node_list_bot) {
+                        mat_col_idx_bot = (node_list_bot < 0) ? matrix_size + node_list_bot : 2 * node_list_bot;
+                        Node_matrix.insert(mat_row_idx_bot, mat_col_idx_bot) = 1;
+                        if (node_list_bot >= 0) Node_matrix.insert(mat_row_idx_bot, mat_col_idx_bot + 1) = 1;
+                    }
 
+                    int mat_row_idx_twin = 2 * i;
+                    int mat_col_idx_twin = 2 * i + 1;
+                    Node_matrix.insert(mat_row_idx_twin, mat_col_idx_twin) = 1;
+                    Node_matrix.insert(mat_col_idx_twin, mat_row_idx_twin) = 1;
 
+                    int mat_row_idx_lft = 2 * i + 1;
+                    int mat_col_idx_lft;
+                    if (-3 < node_list_lft) {
+                        mat_col_idx_lft = (node_list_lft < 0) ? matrix_size + node_list_lft : 2 * node_list_lft;
+                        Node_matrix.insert(mat_row_idx_lft, mat_col_idx_lft) = 1;
+                        if (node_list_lft >= 0) Node_matrix.insert(mat_row_idx_lft, mat_col_idx_lft + 1) = 1;
+                    }
+
+                    int mat_row_idx_rgt = 2 * i + 1;
+                    int mat_col_idx_rgt;
+                    if (-3 < node_list_rgt) {
+                        mat_col_idx_rgt = (node_list_rgt < 0) ? matrix_size + node_list_rgt : 2 * node_list_rgt;
+                        Node_matrix.insert(mat_row_idx_rgt, mat_col_idx_rgt) = 1;
+                        if (node_list_rgt >= 0) Node_matrix.insert(mat_row_idx_rgt, mat_col_idx_rgt + 1) = 1;
+                    }
                 }
-                
-               
+                for (int i = 0; i < matrix_size; i++) Node_matrix.insert(matrix_size - 1, i) = Node_matrix.coeff(i, matrix_size - 1);
+                for (int i = 0; i < matrix_size; i++) Node_matrix.insert(matrix_size - 2, i) = Node_matrix.coeff(i, matrix_size - 2);
+
+                for (int i = 0; i < matrix_size; i++) {
+                    for (int j = 0; j < matrix_size; j++) {
+                        if (Node_matrix.coeff(i, j) != Node_matrix.coeff(j, i) != 0) Node_matrix.coeffRef(i, j) = 0;
+                    }
+                }
+
+                SparseMatrix<double> Node_matrix_A(matrix_size - 2, matrix_size - 2);
+                for (int i = 0; i < matrix_size - 2; i++) {
+                    for (int j = 0; j < matrix_size - 2; j++) {
+                        Node_matrix_A.insert(i, j) = Node_matrix.coeff(i, j);
+                        if (Node_matrix.coeff(i, j) > 0) {
+                            int node_num = -1;
+                            int node_idx = -1;
+                            int i_0 = Node_list[i][0];
+                            int i_1 = Node_list[i][1];
+                            int i_2 = Node_list[i][2];
+                            int i_3 = Node_list[i][3];
+                            int j_0 = Node_list[j][0];
+                            int j_1 = Node_list[j][1];
+                            int j_2 = Node_list[j][2];
+                            int j_3 = Node_list[j][3];
+                            if (i_0 == j_0) {
+                                node_num = i_0;
+                                node_idx = i_1 < j_1 ? i_1 : j_1;
+                            }
+                            if (Node_list[i][0] == Node_list[j][2]) {
+                                node_num = i_0;
+                                node_idx = i_1 < j_3 ? i_1 : j_3;
+                            }
+                            if (Node_list[i][2] == Node_list[j][0]) {
+                                node_num = i_2;
+                                node_idx = i_3 < j_1 ? i_3 : j_1;
+                            }
+                            if (Node_list[i][2] == Node_list[j][2]) {
+                                node_num = i_2;
+                                node_idx = i_3 < j_3 ? i_3 : j_3;
+                            }
+                            // 중복되는 값에 insert 넣으면 에러 뜸 (해결)
+                            // https://stackoverflow.com/questions/30156243/re-insertion-of-sparse-matrix-of-eigen-library
+                            // 기존 코드 Node_matrix_A.insert(i, j) = Node_distance[node_num][node_idx];
+                            // Node_distance 불러와야 함
+
+                            Node_matrix_A.coeffRef(i,j) = Node_distance[node_num][node_idx];
+                        }
+                    }
+                }
+
+                VectorXd Node_vector_b(matrix_size - 2);
+
+                Node_matrix_A.makeCompressed();
+                cout << "done" << endl;
+                system("pause");
+
             }
         }
     }
+    return 0;
 }
 
 void addNodeRecursive(Node* node) {
 
     // If Node info is empty, then print nothing
-    if (node == nullptr) { 
-       cout << "This Node is empty" << endl;
-        return; }
+    if (node == nullptr) {
+        cout << "This Node is empty" << endl;
+        return;
+    }
 
-    bool duplicateFlag = false; 
+    bool duplicateFlag = false;
 
     //cout << "storage_idx[node->name_0] : "  << storage_idx[node->name_0] << endl;
     //cout << "node->name_0 : " << node->name_0 <<  " node->name_1 : " << node->name_1 << endl;
@@ -186,12 +271,12 @@ void addNodeRecursive(Node* node) {
 
     // node index (row 값)과, stroage에 저장된 node가 같을 경우 // node->name_0은 row, node->name_1은 column
     // storage_idx[node->name_0]은 storage의 column
-    for (int i = 0; i < storage_idx[node->name_0]; ++i) {   
+    for (int i = 0; i < storage_idx[node->name_0]; ++i) {
         if (storage[node->name_0][i] == node->name_1) {
             duplicateFlag = true;
         }
     }
-   
+
     // Storage에 쌓여있던 값이랑 같아버리면 안되니까 중복처리합니다.
     for (int i = 0; i < storage_idx[node->value_0]; ++i) {
         if ((node->value_0 != -1) && (storage[node->value_0][i] == node->value_1)) duplicateFlag = true;
@@ -216,13 +301,13 @@ void addNodeRecursive(Node* node) {
         num_Node++;
         if (node->status != 'L') {
             node->node_num = num_non_dup_Node;
-            num_non_dup_Node++; 
-        }       
+            num_non_dup_Node++;
+        }
         else {
             node->node_num = -2; // L
         }
     }
-    
+
     // 연결된 게 없으면 종료해야함
     if (node->status != 'T') {
         return;
@@ -268,14 +353,14 @@ void TreetoListRecursive_first(Node* node) {
 
     if (node == nullptr)return;
 
-    int node_num_tmp = node->node_num; 
+    int node_num_tmp = node->node_num;
 
     if (node_num_tmp >= 0) {
-        
+
         Node_list[node_num_tmp][0] = node->name_0;
         Node_list[node_num_tmp][1] = node->name_1;
         Node_list[node_num_tmp][2] = node->value_0;
-        Node_list[node_num_tmp][3] = node->value_1; 
+        Node_list[node_num_tmp][3] = node->value_1;
     }
 
     TreetoListRecursive_first(node->left);
@@ -337,10 +422,10 @@ void TreetoListRecursive_second(Node* node) {
 
 bool findPathAliveRecursive(Node* node) {
     if (node == nullptr)        return false;
-    if (node->status == 'F') { 
+    if (node->status == 'F') {
         cout << "Final Segment" << endl;
-        cout << node->name_0 << " " << node->name_1<< endl;
-        return true; 
+        cout << node->name_0 << " " << node->name_1 << endl;
+        return true;
     }
     if (findPathAliveRecursive(node->left) || findPathAliveRecursive(node->middle) || findPathAliveRecursive(node->right)) return true;
     return false;
@@ -352,8 +437,8 @@ char find_status(int name_0, int name_1, int value_0, int value_1) {
     char stat = 'T';
 
     if (value_0 == -1 && value_1 == -1) stat = 'D';
-    if (value_0 == -1 && value_1 ==  1) stat = 'F';
-    if (value_0 == -1 && value_1 ==  0) {
+    if (value_0 == -1 && value_1 == 1) stat = 'F';
+    if (value_0 == -1 && value_1 == 0) {
         stat = 'S'; start_candidate[name_0] = false;
     }
     return stat;
@@ -422,6 +507,35 @@ void preprocessingNode_Array(ifstream& file_col) {
         i++;
     }
 }
+
+void preprocessingDis_Array(ifstream& file_dis) {
+    
+    // Node_distance 변수 가지고 장난치기
+    string line;
+    int row = 0;
+
+    while (getline(file_dis, line) && row < MAX_NODE_SIZE) {
+        istringstream iss(line);
+        string value;
+
+        int col = 0;
+
+        while (getline(iss, value, ',') && col < MAX_COLLISION) {
+            // 문자열을 double로 변환하여 배열에 저장
+            Node_distance[row][col] = stod(value);
+            col++;
+        }
+        row++;
+    }
+    for (int i = 0; i < row; ++i) {
+        for (int j = 0; j < MAX_COLLISION; ++j) {
+            cout << Node_distance[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+
 
 void visualizeNode_Array() {
 
