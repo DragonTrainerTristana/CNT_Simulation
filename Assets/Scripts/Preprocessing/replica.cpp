@@ -152,15 +152,25 @@ int main() {
                 SparseMatrix<double> Node_matrix(matrix_size, matrix_size);
 
                 for (int i = 0; i < num_non_dup_Node; i++) {
-                    int node_list_top = Node_list[i][4];
-                    int node_list_bot = Node_list[i][5];
-                    int node_list_lft = Node_list[i][6];
-                    int node_list_rgt = Node_list[i][7];
-
+                    int node_list_top = Node_list[i][4]; // parent
+                    int node_list_bot = Node_list[i][5]; // middle
+                    int node_list_lft = Node_list[i][6]; // left
+                    int node_list_rgt = Node_list[i][7]; // right
 
                     int mat_row_idx_top = 2 * i;
                     int mat_col_idx_top;
                     mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
+                    
+                    // 0 , 769
+                   
+                    // 
+
+                    //system("pause");
+                    //cout << "배열 확인" << endl;
+                    //cout << mat_row_idx_top << endl << mat_col_idx_top << endl;
+
+
+                    // insert 하는 이유는?
                     Node_matrix.insert(mat_row_idx_top, mat_col_idx_top) = 1;
                     if (node_list_top >= 0) Node_matrix.insert(mat_row_idx_top, mat_col_idx_top + 1) = 1;
 
@@ -202,6 +212,31 @@ int main() {
                     }
                 }
 
+
+
+                cout << "Alive? " << endl;
+
+                system("pause");
+
+                int count = 0;
+
+                for (int i = 0; i < Node_matrix.rows(); i++) {
+                    for (int j = 0; j < Node_matrix.cols(); j++) {
+
+                        if (Node_matrix.coeff(i, j) != 0) { 
+                            count++;
+                            cout << "row : " << i << " col :"<< j << endl;
+                            cout << Node_matrix.coeff(i, j) << endl; 
+                            
+                        }
+                        
+                    }
+                }
+                cout << "count : " << count << endl; // 782 * 2 = count
+                system("pause");
+
+                // Compressed Matrix A
+
                 SparseMatrix<double> Node_matrix_A(matrix_size - 2, matrix_size - 2);
                 for (int i = 0; i < matrix_size - 2; i++) {
                     for (int j = 0; j < matrix_size - 2; j++) {
@@ -213,10 +248,12 @@ int main() {
                             int i_1 = Node_list[i][1];
                             int i_2 = Node_list[i][2];
                             int i_3 = Node_list[i][3];
+
                             int j_0 = Node_list[j][0];
                             int j_1 = Node_list[j][1];
                             int j_2 = Node_list[j][2];
                             int j_3 = Node_list[j][3];
+
                             if (i_0 == j_0) {
                                 node_num = i_0;
                                 node_idx = i_1 < j_1 ? i_1 : j_1;
@@ -238,7 +275,7 @@ int main() {
                             // 기존 코드 Node_matrix_A.insert(i, j) = Node_distance[node_num][node_idx];
                             // Node_distance 불러와야 함
 
-                            Node_matrix_A.coeffRef(i,j) = Node_distance[node_num][node_idx];
+                            Node_matrix_A.coeffRef(i, j) = Node_distance[node_num][node_idx];
                         }
                     }
                 }
@@ -246,6 +283,17 @@ int main() {
                 VectorXd Node_vector_b(matrix_size - 2);
 
                 Node_matrix_A.makeCompressed();
+
+
+
+
+                //for (int i = 0; i < Node_matrix_A.rows(); i++) {
+                //    for (int j = 0; j < Node_matrix_A.cols(); j++) {
+                //        cout << Node_matrix_A.coeff(i,j) << endl;
+                // 
+                //    }
+                //}
+
                 cout << "done" << endl;
                 system("pause");
 
@@ -509,7 +557,7 @@ void preprocessingNode_Array(ifstream& file_col) {
 }
 
 void preprocessingDis_Array(ifstream& file_dis) {
-    
+
     // Node_distance 변수 가지고 장난치기
     string line;
     int row = 0;
