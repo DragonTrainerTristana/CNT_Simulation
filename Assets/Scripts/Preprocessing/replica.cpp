@@ -212,7 +212,8 @@ int main() {
                     }
                 }
 
-
+                // Node_Matrix_coeff(i,j)에서 1인 애들만 확인해보기
+                
 
                 cout << "Alive? " << endl;
 
@@ -226,7 +227,12 @@ int main() {
                         if (Node_matrix.coeff(i, j) != 0) { 
                             count++;
                             cout << "row : " << i << " col :"<< j << endl;
-                            cout << Node_matrix.coeff(i, j) << endl; 
+
+                            // cout << Node_matrix.coeff(i, j) << endl; // 전부 1을 뽑아냄
+
+                            cout << "Node_list[i][0] : " << Node_list[i][0] << " Node_list[i][1] : " << Node_list[i][1] << endl << endl;
+                            
+
                             
                         }
                         
@@ -275,6 +281,14 @@ int main() {
                             // 기존 코드 Node_matrix_A.insert(i, j) = Node_distance[node_num][node_idx];
                             // Node_distance 불러와야 함
 
+
+                            // 겹치는 애들 제거해야함
+                            // -값들 삭제해야함
+
+
+
+                            cout << "node_num : " << node_num << " node_idx : " << node_idx << endl;
+                            system("pause");
                             Node_matrix_A.coeffRef(i, j) = Node_distance[node_num][node_idx];
                         }
                     }
@@ -285,7 +299,7 @@ int main() {
                 Node_matrix_A.makeCompressed();
 
 
-
+                // 
 
                 //for (int i = 0; i < Node_matrix_A.rows(); i++) {
                 //    for (int j = 0; j < Node_matrix_A.cols(); j++) {
