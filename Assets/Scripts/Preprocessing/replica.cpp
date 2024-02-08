@@ -23,8 +23,9 @@ double Node_distance[MAX_NODE_SIZE][MAX_COLLISION] = { {{0}} };
 
 int num_Node = 0;
 int num_non_dup_Node = 0;
-int Node_list[MAX_NODE_SIZE][8] = { {0, 0, 0, 0, 0, 0, 0, 0} }; //name_0, name_1, value_0, value_1, parent, left, middle, right
+int Node_list[MAX_NODE_SIZE][8] = { {0, 0, 0, 0, 0, 0, 0, 0} }; //name_0, name_1, value_0, value_1, parent, left, middle, right,status
 int Node_list_idx = 0;
+char Node_status_list[MAX_NODE_SIZE] = {'N'};
 
 struct Node {
     int name_0;
@@ -130,6 +131,10 @@ int main() {
                 TreetoListRecursive_second(root);
                 for (int i = 0; i < num_non_dup_Node; i++) {
                     cout
+
+                        << "Num : " << i
+                        << endl
+
                         << Node_list[i][0] << " " // name_0
                         << Node_list[i][1] << " " // name_1
                         << Node_list[i][2] << " " // value_0
@@ -140,6 +145,7 @@ int main() {
                         << Node_list[i][5] << " " // middle idx
                         << Node_list[i][6] << " " // left idx
                         << Node_list[i][7] << " " // right idx
+                        << "Status : " << Node_status_list[i] << " " // status idx
                         << endl;
                 }
 
@@ -160,9 +166,9 @@ int main() {
                     int mat_row_idx_top = 2 * i;
                     int mat_col_idx_top;
                     mat_col_idx_top = (node_list_top < 0) ? matrix_size + node_list_top : 2 * node_list_top;
-                    
+
                     // 0 , 769
-                   
+
                     // 
 
                     //system("pause");
@@ -213,7 +219,7 @@ int main() {
                 }
 
                 // Node_Matrix_coeff(i,j)에서 1인 애들만 확인해보기
-                
+
 
                 cout << "Alive? " << endl;
 
@@ -224,18 +230,18 @@ int main() {
                 for (int i = 0; i < Node_matrix.rows(); i++) {
                     for (int j = 0; j < Node_matrix.cols(); j++) {
 
-                        if (Node_matrix.coeff(i, j) != 0) { 
+                        if (Node_matrix.coeff(i, j) != 0) {
                             count++;
-                            cout << "row : " << i << " col :"<< j << endl;
+                            cout << "row : " << i << " col :" << j << endl;
 
                             // cout << Node_matrix.coeff(i, j) << endl; // 전부 1을 뽑아냄
 
                             cout << "Node_list[i][0] : " << Node_list[i][0] << " Node_list[i][1] : " << Node_list[i][1] << endl << endl;
-                            
 
-                            
+
+
                         }
-                        
+
                     }
                 }
                 cout << "count : " << count << endl; // 782 * 2 = count
@@ -286,10 +292,12 @@ int main() {
                             // -값들 삭제해야함
 
 
+                            if (node_num != -1) {
+                                cout << "node_num : " << node_num << " node_idx : " << node_idx << endl;
+                                system("pause");
+                                Node_matrix_A.coeffRef(i, j) = Node_distance[node_num][node_idx];
+                            }
 
-                            cout << "node_num : " << node_num << " node_idx : " << node_idx << endl;
-                            system("pause");
-                            Node_matrix_A.coeffRef(i, j) = Node_distance[node_num][node_idx];
                         }
                     }
                 }
@@ -314,6 +322,49 @@ int main() {
             }
         }
     }
+
+    MatrixXd matrix_A(3, 3);
+    matrix_A << 0, 0, 1,
+        0, 0, 0,
+        1, 0, 0;
+
+    // 이게 이제, fiber 충돌 길이로 바뀌고
+    MatrixXd matrix_B(3, 3);
+    matrix_B << 0, 0, 0.078,
+        0, 0, 0,
+        0.12, 0, 0;
+
+    // 저항 계산을 위한 비저항 값을 설정
+    double rho = 1.0; // 예시로 1 ohm·m를 사용하기
+
+    // 저항 행렬로 바꿔주기
+    MatrixXd resistance_matrix = rho * matrix_B.array();
+
+
+    // 저항구하는 matrix 계산: -resistance_matrix + diag(sum(resistance_matrix, 2))
+    MatrixXd conmat = -resistance_matrix;
+    conmat += MatrixXd(resistance_matrix.rowwise().sum().asDiagonal());
+
+    // bb 벡터 계산: -conmat3의 첫 번째 열
+    VectorXd bb = -conmat.col(0);
+
+    // AA 행렬 계산: conmat3의 나머지 부분 + 마지막 열에 추가 조건 적용
+    MatrixXd AA = conmat.block(0, 1, conmat.rows(), conmat.cols() - 2);
+    AA.conservativeResize(AA.rows(), AA.cols() + 1);
+    AA.col(AA.cols() - 1) = VectorXd::Zero(AA.rows());
+    AA(0, AA.cols() - 1) = -1;
+    AA(AA.rows() - 1, AA.cols() - 1) = 1;
+
+    // 선형 방정식 풀기: AA * xx = bb
+    VectorXd xx = AA.fullPivLu().solve(bb);
+
+    // 전체 네트워크의 저항 계산: rent = 1 / xx의 마지막 값
+    // % the last entry of xx is total current
+    double rent = 1.0 / xx(xx.size() - 1);
+
+    std::cout << "Calculated Resistance: " << rent << std::endl;
+
+
     return 0;
 }
 
@@ -475,6 +526,7 @@ void TreetoListRecursive_second(Node* node) {
     Node_list[node_num_tmp][5] = node_middle_idx; // 
     Node_list[node_num_tmp][6] = node_left_idx; // 
     Node_list[node_num_tmp][7] = node_right_idx; // -2이길 바래야지
+    Node_status_list[node_num_tmp] = node->status;
 
     TreetoListRecursive_second(node->left);
     TreetoListRecursive_second(node->middle);
