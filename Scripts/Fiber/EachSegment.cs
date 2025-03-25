@@ -4,354 +4,219 @@ using UnityEngine;
 
 public class EachSegment : MonoBehaviour
 {
-
+    private HashSet<string> sameFiberSegments = new HashSet<string>();
     private HashSet<string> uniqueCollisions = new HashSet<string>();
-    // ÇÒ´çÇÏ±â orignal.cs(generateSegment)
-    public string parentNode; // ¹ŞÀ½
-    public int segmentNum; // ¹ŞÀ½
 
-    // Ãæµ¹ ÁöÁ¡ °è»ê º¯¼ö
-    public float currentLength; // ÇØ¾ßÇÔ
-    public float collisionLength; // Ãæµ¹ °è»ê ³»¿ë
-    public float legendLength;
-    public float sLength;
-    public float fLength;
+    // GameObject
+    public GameObject UIManagement;
 
-    public Vector3 initialPos; // ¹ŞÀ½
-    public Vector3 collisionPos; // ÇØ¾ßÇÔ (ÇßÀ½)
-    public Vector3 sfPos;
-    public Vector3 startPos;
-    public Vector3 finalPos;
-    public float distance; //°è»êÇÔ
-    public float startDis;
-    public float finalDis;
+    // í• ë‹¹í•˜ê¸° orignal.cs(generateSegment)
+    public string parentNode; // ìƒì†
+    public int segmentNum; // ìƒì†
 
-    public string collisionFiber; // ÀÚ±â Á¦¿Ü Ãæµ¹ µÈ Fiber
+    public Vector3 initialPos; // ìƒì†
+    public Vector3 collisionPos; // í•´ì•¼í•¨ (ìƒì†)
+    public string collisionFiber; // ìê¸° ì™¸ì˜ ì¶©ëŒ í•œ Fiber
     public string finalFiber;
     public string sFiber;
     public string fFiber;
     private string arbiContact;
     private string arbiSegment;
 
-    public bool collState = true;
-
-    //¾È ¾²´Â º¯¼öÀÓ
+    public bool collState = false;
     public bool startStatus = false;
     public bool finalStatus = false;
 
-    public bool SS = false;
-    public bool FF = false;
-
     public bool parentAlive = false;
     public bool childAlive = false;
+    public bool deleteStatus = false;
 
-    private bool deleteStatus = false;
+    public int uniqueCollCount;
+    public bool yeah = false;
 
-
-    // Ãæµ¹ º¯¼ö
-    // tag -> Fiber
-    private bool collisionState = false;
-
-    // Ãæµ¹ ¿ÀºêÁ§Æ®
-
-    private float startTime = 0.0f;
-    private float endTime = 5.0f;
-    private bool stateTime = true;
-
+    public float deleteTime = 0.0f;
+    public float triggerTime = 0.0f;
     public GameObject environment;
-    //private bool possibleTime = false;
+    
+    // ë¬¼ë¦¬ ì»´í¬ë„ŒíŠ¸ ìºì‹± (ì œê±° ì „ ì°¸ì¡° ìœ ì§€ë¥¼ ìœ„í•´)
+    private Rigidbody myRigidbody;
+    private Collider myCollider;
+    
+    // ì¶©ëŒ ë°ì´í„° ì €ì¥ ì™„ë£Œ í”Œë˜ê·¸
+    private bool collisionDataCollected = false;
 
-
-    void Update()
+    public void Start()
     {
-        //if(environment.GetComponent<Environment>().fieldCollisionState == true)
-        //{
-        //    possibleTime = true;
-        //}  
-
-        startTime += Time.deltaTime;
-        if (endTime <= startTime)
-        {
-            deleteStatus = true;
-        }
-
+        collState = false;
+        Application.targetFrameRate = -1;
+        
+        // ë¬¼ë¦¬ ì»´í¬ë„ŒíŠ¸ ìºì‹±
+        myRigidbody = GetComponent<Rigidbody>();
+        myCollider = GetComponent<Collider>();
+        
+        // ì¼ì • ì‹œê°„ í›„ ë¬¼ë¦¬ ë¹„í™œì„±í™” ì½”ë£¨í‹´ ì‹œì‘
+        StartCoroutine(DisablePhysicsAfterDelay());
     }
 
-    private void OnTriggerStay(Collider other) // Enter -> Stay
+    public void Update()
     {
-
-            // ¿©±â¿¡¼­ ±×³É ´Ù Ã³¸®ÇØº¸¸é ¾ÈµÇ³ª
-            if (other.gameObject.CompareTag("Start"))
+        triggerTime += Time.deltaTime;
+        
+        // ê¸°ì¡´ ì½”ë“œì—ì„œ physics ê´€ë ¨ ì²˜ë¦¬ë¥¼ ì½”ë£¨í‹´ìœ¼ë¡œ ëŒ€ì²´
+        if(triggerTime >= 2.2f && !collisionDataCollected)
+        {
+            // ì¶©ëŒ ë°ì´í„° ìˆ˜ì§‘ ì™„ë£Œ í‘œì‹œ
+            collisionDataCollected = true;
+            
+            // ë Œë”ëŸ¬ ìƒíƒœ ì„¤ì • (í•„ìš”í•œ ê²½ìš°ì—ë§Œ í™œì„±í™”)
+            if (collState || startStatus || finalStatus)
             {
-
-                startStatus = true;
-                //startPos = other.ClosestPoint(transform.position);
-                startPos = other.ClosestPointOnBounds(transform.position); // ¿©±â ºÎºĞÀÌ ¹®Á¦ÀÓ
-                startDis = Vector3.Distance(initialPos, startPos);
-                sLength = currentLength + startDis;
-
-                //sFiber = "[" + sLength.ToString() + " S]";
-                sFiber = sLength.ToString();
-                //this.gameObject.GetComponent<EachSegment>().SS = true;
-                SS = true;
-
+                // ì¤‘ìš”í•œ ì„¸ê·¸ë¨¼íŠ¸ëŠ” ë³´ì´ê²Œ ìœ ì§€
+                GetComponent<Renderer>().enabled = true;
             }
-            if (other.gameObject.CompareTag("Final"))
+            else
             {
-                finalStatus = true;
-                //finalPos = other.contacts[0];
-                //finalPos = other.ClosestPoint(transform.position);
-                finalPos = other.ClosestPointOnBounds(transform.position);
-                finalDis = Vector3.Distance(initialPos, finalPos);
-                fLength = currentLength + finalDis;
-                //fFiber = "[" + fLength.ToString() + " F]";
-                fFiber = fLength.ToString();
-                //this.gameObject.GetComponent<EachSegment>().FF = true;
-                FF = true;
+                // ì¤‘ìš”í•˜ì§€ ì•Šì€ ì„¸ê·¸ë¨¼íŠ¸ëŠ” ìˆ¨ê¹€
+                GetComponent<Renderer>().enabled = false;
             }
+        }
+    }
+    
+    // ì¼ì • ì‹œê°„ í›„ ë¬¼ë¦¬ ì‹œìŠ¤í…œ ë¹„í™œì„±í™”
+    private IEnumerator DisablePhysicsAfterDelay()
+    {
+        // ì¶©ëŒ ë°ì´í„° ìˆ˜ì§‘ì— í•„ìš”í•œ ì‹œê°„(2.2ì´ˆ) ë™ì•ˆ ëŒ€ê¸°
+        yield return new WaitForSeconds(2.2f);
+        
+        // ë¬¼ë¦¬ ì»´í¬ë„ŒíŠ¸ ë¹„í™œì„±í™” ë° ì œê±°
+        DisablePhysics();
+    }
+    
+    // ë¬¼ë¦¬ ì»´í¬ë„ŒíŠ¸ ì™„ì „ ì œê±° ë©”ì†Œë“œ
+    public void DisablePhysics()
+    {
+        if (gameObject != null)
+        {
+            // ë¨¼ì € ë¬¼ë¦¬ ìƒí˜¸ì‘ìš©ì„ ë„ê³ 
+            if (myRigidbody != null)
+            {
+                myRigidbody.isKinematic = true;
+                myRigidbody.detectCollisions = false;
+            }
+            
+            if (myCollider != null)
+            {
+                myCollider.enabled = false;
+            }
+            
+            // ì¶©ëŒ ë°ì´í„°ê°€ ëª¨ë‘ ìˆ˜ì§‘ë˜ì—ˆëŠ”ì§€ í™•ì¸
+            if (collisionDataCollected)
+            {
+                // ë¬¼ë¦¬ ì»´í¬ë„ŒíŠ¸ ì™„ì „ ì œê±°
+                if (myRigidbody != null) Destroy(myRigidbody);
+                if (myCollider != null) Destroy(myCollider);
+                
+                // ì°¸ì¡° ì •ë¦¬
+                myRigidbody = null;
+                myCollider = null;
+            }
+        }
+    }
 
+    private void ByeByeBye()
+    {
+        if (childAlive == true && parentAlive == true)
+        {
+            return;
+        }
+        if (childAlive != true)
+        {
+            if (collState == true)
+            {
+                if (uniqueCollCount >= 2) { }
+                if (uniqueCollCount == 1)
+                {
+                    if (startStatus == true || finalStatus == true) { }
+                    else if (parentAlive != true) Destroy(this.gameObject);
+                }
+            }
+            else if ((startStatus == true || finalStatus == true) && parentAlive == true) { }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
+        if (parentAlive != true)
+        {
+            if (collState == true)
+            {
+                if (uniqueCollCount >= 2) { }
+                if (uniqueCollCount == 1)
+                {
+                    if (startStatus == true || finalStatus == true) { }
+                    else if (childAlive != true) Destroy(this.gameObject);
+                }
+            }
+            else if ((startStatus == true || finalStatus == true) && childAlive == true) { } // ìˆ˜ì •
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
+    }
 
+    private void OnTriggerStay(Collider other)
+    {
+        // ì¶©ëŒ ë°ì´í„° ìˆ˜ì§‘ ê¸°ê°„ ë™ì•ˆë§Œ ì²˜ë¦¬
+        if (triggerTime <= 2.0f)
+        {
+            if (other.gameObject.CompareTag("Start")) startStatus = true;
+            if (other.gameObject.CompareTag("Final")) finalStatus = true;
             if (other.CompareTag("Fiber"))
             {
-                
-            // ±×Áö °°Àº°Å ¿Ö ¾ÈµÇ´Â°Çµ¥ 
-            arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
-                
-            arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
-            string _collisionFiber = arbiContact + " " + arbiSegment;
+                arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
+                arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
+                //string _collisionFiber = arbiContact + "X" + arbiSegment;
+                string _collisionFiber = arbiContact;
 
+                if (arbiContact == parentNode)
+                {
+                    if (!sameFiberSegments.Contains(arbiSegment))
+                    {
+                        sameFiberSegments.Add(arbiSegment);
 
-                // ´Ù¸¥ FIber¿Í Ãæµ¹ÇßÀ» ¶§
+                        if (segmentNum > int.Parse(arbiSegment))
+                        {
+                            parentAlive = true;
+                        }
+                        else if (segmentNum < int.Parse(arbiSegment))
+                        {
+                            childAlive = true;
+                        }
+                    }
+                }
                 if (arbiContact != parentNode)
                 {
-                    //Debug.Log("???");
-                    collState = false;
-
+                    this.gameObject.GetComponent<Renderer>().material.color = Color.red;
+                    collState = true;
                     if (!uniqueCollisions.Contains(_collisionFiber))
                     {
-                        // Add the collision information to the HashSet 
                         uniqueCollisions.Add(_collisionFiber);
+                        uniqueCollCount = uniqueCollisions.Count;
 
-                        // Add a comma to separate collision data entries
                         if (collisionFiber.Length > 0)
                         {
                             collisionFiber += ",";
-                            finalFiber += ",";
                         }
-
-                        // Append the collision information to the string
-                        collisionPos = other.ClosestPoint(transform.position);
-                        distance = Vector3.Distance(initialPos, collisionPos);
-                        collisionLength = currentLength + distance;
-
-                        finalFiber += collisionLength.ToString();
                         collisionFiber += arbiContact.ToString();
                     }
-
-                    if (deleteStatus == true)
-                    {
-                        if (childAlive == false || parentAlive == false)
-                        {
-                            Destroy(this);
-                        }
-                    }
                 }
-
-                // Parent¿Í °°Àº Fiber¿Í Ãæµ¹ÇßÀ» ¶§
-                // S¿Í FÀÇ Status¸¦ ÁÖ¸é µÊ (ÀüÆÄ)
-                else if (arbiContact == parentNode)
-                {
-                    if (SS == true)
-                    {
-                        other.gameObject.GetComponent<EachSegment>().SS = true;
-                        Debug.Log("SS " + parentNode + " " + segmentNum);
-                    }
-
-                    if (FF == true)
-                    {
-                        other.gameObject.GetComponent<EachSegment>().FF = false;
-                        Debug.Log("FF " + parentNode + " " + segmentNum);
-                    }
-
-                }
-
-                if (deleteStatus == true)
-                {
-
-                    // Ãæµ¹µµÇÏ°í, ºÎ¸ğ³ª ÀÚ½Ä³ëµåµµ ÀÖ´Ù.
-                    if (collisionState == false && arbiContact == parentNode)
-                    {
-                    }
-
-                    // Ãæµ¹³ëµå´Â ¾ø°í ºÎ¸ğ³ª ÀÚ½Ä ³ëµå´Â ÀÖ´Ù.
-                    // ¾Æ¹«°Íµµ Ãæµ¹ÇÏÁö ¾Ê¾ÒÀ» °æ¿ì¿¡´Â, -1X-1 (NONE °ª ºÎ¿©ÇÏ¸é µË´Ï´Ù.)
-                    // ¸¸¾à¿¡ parentNode°¡ 2°³¸é »èÁ¦ÇÏ¸é ¾ÈµÇ°í ´ç¿¬È÷, ºÎ¸ğ³ª ÀÚ½Ä³ëµå ÇÏ³ª¸¸ ÀÖÀ¸¸é »èÁ¦ÇØ¾ßÇÔ
-                    // ÀÌÀ¯´Â, È¥ÀÚ »ßÁ× ³ª¿Â °¡Áö¶ó¼­, °¡ÁöÄ¡±â ÇØ¾ßÇÔ
-                    else if (arbiContact == parentNode && collState == true)
-                    {
-                        if (SS == true || FF == true || SS == false || FF == false)
-                        {
-                            if (segmentNum == int.Parse(arbiSegment) + 1)
-                            {
-                                childAlive = true;
-                            }
-                            else
-                            {
-                                childAlive = false;
-                            }
-
-                            if (segmentNum == int.Parse(arbiSegment) - 1)
-                            {
-                                parentAlive = true;
-                            }
-                            else
-                            {
-                                parentAlive = false;
-                            }
-
-
-                            //ÇÏ³ª¸¸ »ì¾Æµµ
-                            if ((childAlive == true && parentAlive == false) || (childAlive == false && parentAlive == true))
-                            {
-                                // ¾Æ¿¹ ½ºÅ©¸³Æ® ÀÚÃ¼¸¦ ¾ø¾Ö¹ö¸®ÀÚ.
-                                Destroy(this);
-
-
-                            }
-
-
-
-
-
-                        }
-                        else if (SS == false && FF == false)
-                        {
-
-                        }
-
-                        collisionFiber = "-1X-1";
-                    }
-                }
-            }
-            // ¾Æ¹«°Íµµ Ãæµ¹ÇÏÁö ¾Ê¾ÒÀ» °æ¿ì (delete¸¦ ÇÏ´Â°Ô ¸ÂÀ»±î? ±×³É -1X-1ÇÏ´Â°Ô ÁÁÀ»µí?)
-            // ¾Æ´Ï delete´Â ¹«Á¶°Ç ÇØ¾ßµÊ, ±×·¡¾ß col °¨Áö¸¦ ¾ÈÇÏÁö
-            // ±×¸®°í distanceµµ null °ªÀ¸·Î ¹Ù²Ù¸é µÉµí
-            else
-            {
-                Destroy(this);
-                //collisionFiber = "-1X-1";
-            }
-
-        
-    }
-}
-
-/*
-   public class ori_EachSegment : MonoBehaviour
-{
-    private HashSet<string> uniqueCollisions = new HashSet<string>();
-    // ÇÒ´çÇÏ±â orignal.cs(generateSegment)
-    public string parentNode; // ¹ŞÀ½
-    public int segmentNum; // ¹ŞÀ½
-
-    // Ãæµ¹ ÁöÁ¡ °è»ê º¯¼ö
-    public float currentLength; // ÇØ¾ßÇÔ
-    public float collisionLength; // Ãæµ¹ °è»ê ³»¿ë
-
-    public Vector3 initialPos; // ¹ŞÀ½
-    public Vector3 collisionPos; // ÇØ¾ßÇÔ (ÇßÀ½)
-    public float distance; //°è»êÇÔ
-
-    public string collisionFiber; // ÀÚ±â Á¦¿Ü Ãæµ¹ µÈ Fiber
-    public string finalFiber;
-    private string arbiContact;
-    private string arbiSegment;
-
-    public bool collState = true;
-
-    private bool startStatus = false;
-    private bool finalStatus = false;
-
-    // Ãæµ¹ º¯¼ö
-    // tag -> Fiber
-    private bool collisionState = false;
-
-    // Ãæµ¹ ¿ÀºêÁ§Æ®
-
-    private float startTime = 0.0f;
-    private float endTime = 5.0f;
-    private bool stateTime = true;
-    void FixedUpdate()
-    {
-
-        if (collisionFiber.Length <= 0) { collisionFiber = "NONE"; }
-        /*
-        startTime += Time.deltaTime;
-        if(stateTime == true && startTime >= endTime)
-        {
-            stateTime = false;
-            if (stateTime == true) { collisionFiber = "NONE"; }
-            else if (collisionFiber.Length <= 0) collisionFiber = "NONE"; // ÀÏ´Ü ¿©±â¼­ ¹®Á¦ ¹ß»ıÇÏ±ä ÇÔ
-
-            if (finalFiber.Length <= 0) finalFiber = "NONE";
-            
-        }
-        
-    }
-
-    private void OnTriggerStay(Collider other) // Enter -> Stay
-{
-
-
-    if (other.gameObject.CompareTag("Start"))
-    {
-        startStatus = true;
-    }
-    if (other.gameObject.CompareTag("Final"))
-    {
-        finalStatus = true;
-    }
-
-
-    if (other.gameObject.tag == "Fiber")
-    {
-
-
-        arbiContact = other.gameObject.GetComponent<EachSegment>().parentNode;
-        arbiSegment = other.gameObject.GetComponent<EachSegment>().segmentNum.ToString();
-
-        if (arbiContact != parentNode)
-        {
-            collState = false;
-
-            if (other.gameObject.tag == "Edge")
-            {
-
-                collisionFiber = arbiContact + " " + arbiSegment + " " + "Final";
-                if (collisionFiber.Length <= 0) { collisionFiber = "Opt_1"; }
-                collisionPos = other.ClosestPoint(transform.position);
-                distance = Vector3.Distance(initialPos, collisionPos);
-                collisionLength = currentLength + distance;
-                finalFiber = collisionLength.ToString();
-            }
-            else
-            {
-
-
-                collisionFiber = arbiContact + " " + arbiSegment; // ¿©±â°¡ ¿Ö È£ÃâÀÌ Àß ¾ÈµÉ±î? // Ãæµ¹ ¹®Á¦ÀÏ±î?
-                collisionPos = other.ClosestPoint(transform.position);
-                if (collisionFiber.Length <= 0) { collisionFiber = "Opt_2"; }
-
-                distance = Vector3.Distance(initialPos, collisionPos);
-                collisionLength = currentLength + distance;
-                finalFiber = collisionLength.ToString();
-
             }
         }
-        else if (arbiContact == parentNode && collState == true) { collisionFiber = "NONE"; }
+        // ì¶©ëŒ ì²˜ë¦¬ê°€ ì™„ë£Œë˜ë©´ ì¶”ê°€ ì¶©ëŒ ê°ì§€ ë°©ì§€
+        else if (myCollider != null && myCollider.enabled)
+        {
+            myCollider.enabled = false;
+        }
     }
 }
-
-
-}
-*/
